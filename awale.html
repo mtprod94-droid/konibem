@@ -161,16 +161,40 @@
         0 0 14px rgba(201,169,110,.13);
     }
 
-    .pit-count {
-      font-size: clamp(18px, 4.8vw, 28px);
-      font-weight: 700;
-      line-height: 1;
-    }
-
-    .pit-index {
-      color: #b9a57f;
-      font-size: 9px;
-    }
+.pit-count {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  width: 88%;
+  height: 76%;
+  overflow: hidden;
+  padding: 3px;
+}
+.seed {
+  display: block;
+  flex: 0 0 clamp(5px, 1.5vw, 9px);
+  width: clamp(5px, 1.5vw, 9px);
+  height: clamp(7px, 1.9vw, 12px);
+  border-radius: 55% 45% 48% 52%;
+  background: radial-gradient(
+    ellipse at 30% 25%,
+    #f6e4b4 0%,
+    #c9a96e 35%,
+    #8a6030 72%,
+    #49301a 100%
+  );
+  border: 1px solid rgba(50, 30, 10, .7);
+  box-shadow:
+    inset -1px -1px 2px rgba(35, 20, 5, .55),
+    0 1px 1px rgba(0, 0, 0, .6);
+  transform: rotate(var(--seed-rotation, 0deg));
+}
+.pit-index {
+  display: none;
+}
 
     .middle-lane {
       display: flex;
@@ -626,15 +650,37 @@
 
         computerButton.disabled = true;
 
-        computerButton.querySelector(".pit-count").textContent =
-          pits[aiIndexFromVisual(visualIndex)];
+        const computerCount = computerButton.querySelector(".pit-count");
+computerCount.replaceChildren();
+for (let seedIndex = 0; seedIndex < pits[aiIndexFromVisual(visualIndex)]; seedIndex++) {
+  const seed = document.createElement("span");
+  seed.className = "seed";
+  seed.style.setProperty("--seed-rotation", `${(seedIndex * 47) % 70 - 35}deg`);
+  seed.setAttribute("aria-hidden", "true");
+  computerCount.appendChild(seed);
+}
+computerCount.setAttribute(
+  "aria-label",
+  `${pits[aiIndexFromVisual(visualIndex)]} graines`
+);
 
         computerPitsEl.appendChild(computerButton);
 
         const playerButton = createPitButton(HUMAN, visualIndex);
 
-        playerButton.querySelector(".pit-count").textContent =
-          pits[humanIndexFromVisual(visualIndex)];
+        const playerCount = playerButton.querySelector(".pit-count");
+playerCount.replaceChildren();
+for (let seedIndex = 0; seedIndex < pits[humanIndexFromVisual(visualIndex)]; seedIndex++) {
+  const seed = document.createElement("span");
+  seed.className = "seed";
+  seed.style.setProperty("--seed-rotation", `${(seedIndex * 47) % 70 - 35}deg`);
+  seed.setAttribute("aria-hidden", "true");
+  playerCount.appendChild(seed);
+}
+playerCount.setAttribute(
+  "aria-label",
+  `${pits[humanIndexFromVisual(visualIndex)]} graines`
+);
 
         const currentState = {
           pits,
