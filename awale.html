@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#090909">
+
+    <meta name="description"
+          content="Joue à Awalé sur KONIBEM. Découvre un jeu de stratégie traditionnel africain.">
+
+    <title>Awalé — KONIBEM</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* AWALÉ GAME PAGE */
+
+        .awale-page {
+            width: min(100% - 28px, 850px);
+            margin: 0 auto;
+            padding: 30px 0 60px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 28px;
+            color: var(--color-gold-light);
+            font-size: 14px;
+        }
+
+        .awale-heading {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .awale-heading h1 {
+            color: var(--color-gold-light);
+            font-size: clamp(34px, 8vw, 52px);
+            line-height: 1.2;
+            letter-spacing: 3px;
+        }
+
+        .awale-heading p {
+            margin-top: 10px;
+            color: var(--color-muted);
+            font-size: 14px;
+        }
+
+        .game-status {
+            margin-bottom: 18px;
+            padding: 14px;
+            text-align: center;
+            color: var(--color-gold-light);
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-medium);
+        }
+
+        .scoreboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .score-card {
+            padding: 16px 10px;
+            text-align: center;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-medium);
+        }
+
+        .score-card span {
+            display: block;
+            color: var(--color-muted);
+            font-size: 12px;
+        }
+
+        .score-card strong {
+            display: block;
+            margin-top: 5px;
+            color: var(--color-gold-light);
+            font-size: 30px;
+        }
+
+        .awale-board {
+            padding: 18px 12px;
+            background:
+                linear-gradient(145deg, #68421f, #24150c 70%);
+            border: 2px solid #b78b45;
+            border-radius: 28px;
+            box-shadow:
+                inset 0 0 0 3px rgba(0, 0, 0, 0.25),
+                0 14px 36px rgba(0, 0, 0, 0.35);
+        }
+
+        .board-label {
+            margin: 4px 0 12px;
+            color: #f3d89a;
+            text-align: center;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .pits-row {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 6px;
+        }
+
+        .pit {
+            aspect-ratio: 0.82;
+            min-width: 0;
+            padding: 3px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            color: #fff3d1;
+            background:
+                radial-gradient(ellipse at 35% 25%, #53361e, #1a100a);
+            border: 1px solid rgba(255, 218, 150, 0.25);
+            border-radius: 50%;
+            box-shadow:
+                inset 0 4px 9px rgba(0, 0, 0, 0.7),
+                0 2px 3px rgba(255, 220, 160, 0.12);
+            cursor: default;
+        }
+
+        button.pit {
+            font: inherit;
+        }
+
+        button.pit.selectable {
+            border-color: #f2d675;
+            cursor: pointer;
+        }
+
+        button.pit.selectable:focus-visible {
+            outline: 2px solid white;
+            outline-offset: 2px;
+        }
+
+        .pit-count {
+            font-size: clamp(15px, 4vw, 23px);
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .pit-seeds {
+            color: #e9bd69;
+            font-size: 9px;
+            line-height: 1.1;
+        }
+
+        .board-divider {
+            height: 1px;
+            margin: 15px 0;
+            background: rgba(242, 214, 117, 0.35);
+        }
+
+        .game-actions {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .game-action {
+            min-height: 48px;
+            padding: 12px 16px;
+            color: #111;
+            background: linear-gradient(
+                135deg,
+                var(--color-gold-light),
+                var(--color-gold)
+            );
+            border: 0;
+            border-radius: var(--radius-small);
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .game-action.secondary {
+            color: var(--color-gold-light);
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+        }
+
+        .rules-note {
+            margin-top: 28px;
+            padding: 20px;
+            color: var(--color-muted);
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-medium);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .rules-note h2 {
+            margin-bottom: 8px;
+            color: var(--color-gold-light);
+            font-size: 17px;
+        }
+
+        @media (max-width: 380px) {
+            .awale-board {
+                padding: 14px 7px;
+            }
+
+            .pits-row {
+                gap: 4px;
+            }
+
+            .pit {
+                padding: 2px;
+            }
+
+            .pit-seeds {
+                font-size: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="site-header">
+        <a href="index.html" class="brand" aria-label="Accueil KONIBEM">
+            <img
+                src="images/MT.KONIBEM.PNG"
+                alt="Logo MT KONIBEM"
+                class="brand-logo"
+            >
+        </a>
+
+        <a href="index.html" class="back-link">
+            ← Accueil
+        </a>
+    </header>
+
+    <main class="awale-page">
+
+        <section class="awale-heading">
+            <h1>AWALÉ</h1>
+            <p>Tradition • Réflexion • Stratégie</p>
+        </section>
+
+        <div class="game-status" id="game-status" aria-live="polite">
+            Préparation du jeu…
+        </div>
+
+        <section class="scoreboard" aria-label="Scores">
+            <div class="score-card">
+                <span>TES GRAINES</span>
+                <strong id="player-score">0</strong>
+            </div>
+
+            <div class="score-card">
+                <span>ORDINATEUR</span>
+                <strong id="computer-score">0</strong>
+            </div>
+        </section>
+
+        <section class="awale-board" aria-label="Plateau d'Awalé">
+
+            <p class="board-label">ORDINATEUR</p>
+
+            <div class="pits-row" id="computer-pits">
+                <div class="pit"><span class="pit-count">4</span></div>
+                <div class="pit"><span class="pit-count">4</span></div>
+                <div class="pit"><span class="pit-count">4</span></div>
+                <div class="pit"><span class="pit-count">4</span></div>
+                <div class="pit"><span class="pit-count">4</span></div>
+                <div class="pit"><span class="pit-count">4</span></div>
+            </div>
+
+            <div class="board-divider"></div>
+
+            <div class="pits-row" id="player-pits">
+                <button class="pit" type="button" disabled>
+                    <span class="pit-count">4</span>
+                </button>
+                <button class="pit" type="button" disabled>
+                    <span class="pit-count">4</span>
+                </button>
+                <button class="pit" type="button" disabled>
+                    <span class="pit-count">4</span>
+                </button>
+                <button class="pit" type="button" disabled>
+                    <span class="pit-count">4</span>
+                </button>
+                <button class="pit" type="button" disabled>
+                    <span class="pit-count">4</span>
+                </button>
+                <button class="pit" type="button" disabled>
+                    <span class="pit-count">4</span>
+                </button>
+            </div>
+
+            <p class="board-label" style="margin-top: 14px;">
+                TOI
+            </p>
+
+        </section>
+
+        <div class="game-actions">
+            <button class="game-action" id="start-game" type="button">
+                COMMENCER LA PARTIE
+            </button>
+
+            <button class="game-action secondary" id="reset-game" type="button">
+                RECOMMENCER
+            </button>
+        </div>
+
+        <section class="rules-note">
+            <h2>À propos de l'Awalé</h2>
+            <p>
+                L'Awalé est un jeu de stratégie traditionnel africain.
+                Chaque joueur utilise six cases et cherche à capturer
+                plus de graines que son adversaire.
+            </p>
+            <p style="margin-top: 10px;">
+                Cette première version présente le plateau.
+                Les règles interactives et l'adversaire informatique
+                seront ajoutés dans les prochaines étapes.
+            </p>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <a href="index.html" class="footer-brand">KONIBEM</a>
+        <p>Nos racines. Nos jeux. Notre avenir.</p>
+        <p class="copyright">
+            &copy; 2026 KONIBEM. Tous droits réservés.
+        </p>
+    </footer>
+
+    <script>
+        "use strict";
+
+        const startButton = document.getElementById("start-game");
+        const resetButton = document.getElementById("reset-game");
+        const status = document.getElementById("game-status");
+
+        startButton.addEventListener("click", function () {
+            status.textContent =
+                "Le plateau est prêt. Les règles interactives arrivent bientôt.";
+        });
+
+        resetButton.addEventListener("click", function () {
+            status.textContent =
+                "Plateau réinitialisé : 4 graines dans chaque case.";
+        });
+    </script>
+
+</body>
+</html>
