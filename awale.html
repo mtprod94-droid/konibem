@@ -142,6 +142,23 @@
     top 260ms ease-in-out;
   will-change: left, top;
 }
+@keyframes seed-landing {
+  0% {
+    transform: translate(-50%, -50%) scale(1.15, 0.85) rotate(-8deg);
+  }
+  35% {
+    transform: translate(-50%, -50%) scale(0.88, 1.12) rotate(5deg);
+  }
+  65% {
+    transform: translate(-50%, -50%) scale(1.05, 0.95) rotate(-3deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1, 1) rotate(0deg);
+  }
+}
+.moving-seed.landing {
+  animation: seed-landing 180ms ease-out forwards;
+}
     .row-label {
       display: flex;
       justify-content: space-between;
