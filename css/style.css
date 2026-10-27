@@ -106,6 +106,18 @@ select:focus-visible {
 
 /* HEADER */
 
+/* KONIBEM BRAND LOGO */
+
+.brand-logo {
+    display: block;
+    width: 175px;
+    max-width: 48vw;
+    height: auto;
+    object-fit: contain;
+}
+
+/* HEADER */
+
 .site-header {
     width: 100%;
     min-height: 76px;
