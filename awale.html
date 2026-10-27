@@ -838,6 +838,14 @@ playerCount.setAttribute(
             humanIndexFromVisual(visualIndex)
           );
 
+if (
+  lastMove &&
+  lastMove.player === HUMAN &&
+  lastMove.index === humanIndexFromVisual(visualIndex)
+) {
+  playerButton.classList.add("last-move");
+}
+
         playerButton.disabled = !canMove;
 
         if (canMove) {
