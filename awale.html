@@ -912,6 +912,7 @@ playerCount.setAttribute(
   }
   // Calculer le résultat réel sans modifier la logique du jeu.
   const result = applyMove(before, index, player);
+  lastMove = { index, player };
   // Préparer l'affichage animé.
   const visualPits = before.pits.slice();
   visualPits[index] = 0;
