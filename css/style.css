@@ -108,12 +108,23 @@ select:focus-visible {
 
 /* KONIBEM BRAND LOGO */
 
+/* KONIBEM BRAND LOGO */
+
+.brand {
+    display: flex;
+    align-items: center;
+    flex-shrink: 1;
+    min-width: 0;
+}
+
 .brand-logo {
     display: block;
-    width: 175px;
-    max-width: 48vw;
+    width: 135px;
+    max-width: 42vw;
+    max-height: 58px;
     height: auto;
     object-fit: contain;
+    object-position: left center;
 }
 
 /* HEADER */
