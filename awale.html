@@ -806,6 +806,14 @@ computerCount.setAttribute(
   `${pits[aiIndexFromVisual(visualIndex)]} graines`
 );
 
+if (
+  lastMove &&
+  lastMove.player === AI &&
+  lastMove.index === aiIndexFromVisual(visualIndex)
+) {
+  computerButton.classList.add("last-move");
+}
+
         computerPitsEl.appendChild(computerButton);
 
         const playerButton = createPitButton(HUMAN, visualIndex);
