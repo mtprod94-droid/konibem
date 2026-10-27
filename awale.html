@@ -670,6 +670,47 @@
       return button;
     }
 
+async function moveSeedVisually(fromIndex, toIndex) {
+  const getPitButton = (index) => {
+    if (index >= 6) {
+      const visualIndex = 11 - index;
+      return playerPitsEl.children[visualIndex];
+    }
+
+    return computerPitsEl.children[index];
+  };
+
+  const fromPit = getPitButton(fromIndex);
+  const toPit = getPitButton(toIndex);
+
+  if (!fromPit || !toPit) {
+    return;
+  }
+
+  const fromRect = fromPit.getBoundingClientRect();
+  const toRect = toPit.getBoundingClientRect();
+
+  const seed = document.createElement("span");
+  seed.className = "moving-seed";
+
+  seed.style.left = `${fromRect.left + fromRect.width / 2}px`;
+  seed.style.top = `${fromRect.top + fromRect.height / 2}px`;
+
+  document.body.appendChild(seed);
+
+  // Force the browser to register the initial position.
+  seed.getBoundingClientRect();
+
+  await new Promise(resolve => requestAnimationFrame(resolve));
+
+  seed.style.left = `${toRect.left + toRect.width / 2}px`;
+  seed.style.top = `${toRect.top + toRect.height / 2}px`;
+
+  await new Promise(resolve => setTimeout(resolve, 280));
+
+  seed.remove();
+}
+
     function render() {
       playerPitsEl.replaceChildren();
       computerPitsEl.replaceChildren();
@@ -797,9 +838,7 @@ playerCount.setAttribute(
     scores: scores.slice(),
     currentPlayer: player
   };
-
   const seedsToMove = before.pits[index];
-
   if (seedsToMove <= 0) {
     return {
       state: before,
@@ -807,47 +846,35 @@ playerCount.setAttribute(
       last: index
     };
   }
-
-  // Die tatsächlichen Spielregeln einmalig berechnen.
+  // Calculer le résultat réel sans modifier la logique du jeu.
   const result = applyMove(before, index, player);
-
-  // Nur die sichtbare Darstellung schrittweise animieren.
+  // Préparer l'affichage animé.
   const visualPits = before.pits.slice();
   visualPits[index] = 0;
-
   pits = visualPits.slice();
   render();
-
   await new Promise(resolve => setTimeout(resolve, 250));
-
   let cursor = index;
-
   for (let seed = 0; seed < seedsToMove; seed++) {
+    const previousIndex = cursor;
     cursor = (cursor + 11) % 12;
-
-    // Die Startmulde beim Umlauf überspringen.
+    // Ignorer la case de départ pendant la distribution.
     if (cursor === index) {
       cursor = (cursor + 11) % 12;
     }
-
+    // Animer le déplacement de la graine entre les deux cases.
+    await moveSeedVisually(previousIndex, cursor);
     visualPits[cursor]++;
-
     pits = visualPits.slice();
     render();
-
-    await new Promise(resolve => setTimeout(resolve, 350));
+    await new Promise(resolve => setTimeout(resolve, 80));
   }
-
-  // Den endgültigen, regelkonformen Spielstand übernehmen.
+  // Appliquer l'état définitif calculé par les règles.
   pits = result.state.pits.slice();
   scores = result.state.scores.slice();
   currentPlayer = result.state.currentPlayer;
-
   render();
-
-  // Eine kurze Pause macht das Ergebnis besser erkennbar.
   await new Promise(resolve => setTimeout(resolve, 300));
-
   return result;
 }
 async function humanMove(index) {
