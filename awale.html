@@ -768,36 +768,57 @@ playerCount.setAttribute(
     scores: scores.slice(),
     currentPlayer: player
   };
-  let seeds = pits[index];
-  pits[index] = 0;
-  render();
-  await new Promise(resolve => setTimeout(resolve, 250));
-  let cursor = index;
-  while (seeds > 0) {
-    cursor = (cursor + 11) % 12;
-    if (cursor === index) continue;
-    pits[cursor]++;
-    seeds--;
-    render();
-    await new Promise(resolve => setTimeout(resolve, 220));
+
+  const seedsToMove = before.pits[index];
+
+  if (seedsToMove <= 0) {
+    return {
+      state: before,
+      captured: 0,
+      last: index
+    };
   }
+
+  // Die tatsächlichen Spielregeln einmalig berechnen.
   const result = applyMove(before, index, player);
-  pits = result.state.pits;
-  scores = result.state.scores;
-  currentPlayer = 1 - player;
+
+  // Nur die sichtbare Darstellung schrittweise animieren.
+  const visualPits = before.pits.slice();
+  visualPits[index] = 0;
+
+  pits = visualPits.slice();
   render();
-  if (result.captured > 0) {
-    const capturedIndices = [];
-    let position = result.last;
-    while (
-      opponentIndices(player).includes(position) &&
-      (before.pits[position] === 2 || before.pits[position] === 3)
-    ) {
-      capturedIndices.push(position);
-      position = (position + 1) % 12;
+
+  await new Promise(resolve => setTimeout(resolve, 250));
+
+  let cursor = index;
+
+  for (let seed = 0; seed < seedsToMove; seed++) {
+    cursor = (cursor + 11) % 12;
+
+    // Die Startmulde beim Umlauf überspringen.
+    if (cursor === index) {
+      cursor = (cursor + 11) % 12;
     }
+
+    visualPits[cursor]++;
+
+    pits = visualPits.slice();
+    render();
+
+    await new Promise(resolve => setTimeout(resolve, 350));
   }
+
+  // Den endgültigen, regelkonformen Spielstand übernehmen.
+  pits = result.state.pits.slice();
+  scores = result.state.scores.slice();
+  currentPlayer = result.state.currentPlayer;
+
+  render();
+
+  // Eine kurze Pause macht das Ergebnis besser erkennbar.
   await new Promise(resolve => setTimeout(resolve, 300));
+
   return result;
 }
 async function humanMove(index) {
