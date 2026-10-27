@@ -888,6 +888,16 @@ if (
           : currentPlayer === HUMAN
             ? "À TOI DE JOUER"
             : "TOUR DE L'ORDINATEUR";
+            
+            computerPitsEl.classList.toggle(
+  "active-turn",
+  started && !gameOver && currentPlayer === AI
+);
+
+playerPitsEl.classList.toggle(
+  "active-turn",
+  started && !gameOver && currentPlayer === HUMAN
+);
     }
 
     function setStatus(message) {
