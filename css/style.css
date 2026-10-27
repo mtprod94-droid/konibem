@@ -576,3 +576,130 @@ select:focus-visible {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* =========================================
+   KONIBEM — MOBILE LAYOUT FIX
+   ========================================= */
+
+/* Grundlayout gegen horizontales Überlaufen */
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+}
+
+main {
+    width: 100%;
+    min-width: 0;
+}
+
+img {
+    max-width: 100%;
+}
+
+/* Header */
+.site-header {
+    width: 100%;
+    min-height: 64px;
+    padding: 8px 14px;
+    gap: 10px;
+}
+
+.brand {
+    min-width: 0;
+    flex: 0 1 auto;
+}
+
+.brand-logo {
+    width: 110px;
+    max-width: 36vw;
+    max-height: 48px;
+    height: auto;
+    object-fit: contain;
+    object-position: left center;
+}
+
+.language-selector {
+    flex: 0 0 auto;
+}
+
+.language-selector select {
+    max-width: 125px;
+    padding: 7px 8px;
+    font-size: 12px;
+}
+
+/* Hauptbereich */
+.hero,
+.games-section {
+    width: calc(100% - 32px);
+    max-width: var(--container-width);
+    margin-right: auto;
+    margin-left: auto;
+}
+
+/* Hero-Abstände für Smartphones */
+.hero {
+    padding: 64px 8px 70px;
+}
+
+.hero h1 {
+    font-size: clamp(36px, 9vw, 72px);
+    letter-spacing: 2px;
+}
+
+.hero h1 span {
+    font-size: clamp(16px, 4vw, 24px);
+}
+
+/* Spiele: eine Spalte auf schmalen Bildschirmen */
+.games-grid {
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+}
+
+.game-card {
+    width: 100%;
+    min-width: 0;
+    padding: 24px 20px;
+}
+
+.game-card > p:not(.game-category) {
+    min-height: 0;
+}
+
+/* Kultur und Footer */
+.culture-section {
+    width: calc(100% - 32px);
+    max-width: 800px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.site-footer {
+    width: 100%;
+}
+
+/* Tablet */
+@media (min-width: 650px) {
+    .games-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .game-card:last-child {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Desktop */
+@media (min-width: 960px) {
+    .games-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .game-card:last-child {
+        grid-column: auto;
+    }
+}
