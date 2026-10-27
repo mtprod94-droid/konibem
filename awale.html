@@ -722,38 +722,31 @@ async function moveSeedVisually(fromIndex, toIndex) {
       const visualIndex = 11 - index;
       return playerPitsEl.children[visualIndex];
     }
-
     return computerPitsEl.children[index];
   };
-
   const fromPit = getPitButton(fromIndex);
   const toPit = getPitButton(toIndex);
-
   if (!fromPit || !toPit) {
     return;
   }
-
   const fromRect = fromPit.getBoundingClientRect();
   const toRect = toPit.getBoundingClientRect();
-
   const seed = document.createElement("span");
   seed.className = "moving-seed";
-
   seed.style.left = `${fromRect.left + fromRect.width / 2}px`;
   seed.style.top = `${fromRect.top + fromRect.height / 2}px`;
-
   document.body.appendChild(seed);
-
-  // Force the browser to register the initial position.
+  // Startposition registrieren.
   seed.getBoundingClientRect();
-
   await new Promise(resolve => requestAnimationFrame(resolve));
-
+  // Samen zur nächsten Mulde bewegen.
   seed.style.left = `${toRect.left + toRect.width / 2}px`;
   seed.style.top = `${toRect.top + toRect.height / 2}px`;
-
+  // Flugbewegung abwarten.
   await new Promise(resolve => setTimeout(resolve, 280));
-
+  // Sanfte Landungsanimation starten.
+  seed.classList.add("landing");
+  await new Promise(resolve => setTimeout(resolve, 180));
   seed.remove();
 }
 
