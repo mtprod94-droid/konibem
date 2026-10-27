@@ -716,94 +716,93 @@
       return true;
     }
 
-    function humanMove(index) {
-      if (!started || gameOver || currentPlayer !== HUMAN) {
-        return;
-      }
-
-      const state = {
-        pits,
-        scores,
-        currentPlayer
-      };
-
-      const moves = legalMoves(state, HUMAN);
-
-      if (!moves.includes(index)) {
-        setStatus("Choisis une case autorisée contenant des graines.");
-        return;
-      }
-
-      const result = applyMove(state, index, HUMAN);
-
-      pits = result.state.pits;
-      scores = result.state.scores;
-      currentPlayer = AI;
-
-      render();
-
-      setStatus(
-        result.captured
-          ? `Tu captures ${result.captured} graine(s). L'ordinateur réfléchit…`
-          : "L'ordinateur réfléchit…"
-      );
-
-      if (checkGameEnd()) {
-        return;
-      }
-
-      aiTimer = setTimeout(computerMove, 450);
+    async function animateMove(index, player) {
+  const before = {
+    pits: pits.slice(),
+    scores: scores.slice(),
+    currentPlayer: player
+  };
+  let seeds = pits[index];
+  pits[index] = 0;
+  render();
+  await new Promise(resolve => setTimeout(resolve, 250));
+  let cursor = index;
+  while (seeds > 0) {
+    cursor = (cursor + 11) % 12;
+    if (cursor === index) continue;
+    pits[cursor]++;
+    seeds--;
+    render();
+    await new Promise(resolve => setTimeout(resolve, 220));
+  }
+  const result = applyMove(before, index, player);
+  pits = result.state.pits;
+  scores = result.state.scores;
+  currentPlayer = 1 - player;
+  render();
+  if (result.captured > 0) {
+    const capturedIndices = [];
+    let position = result.last;
+    while (
+      opponentIndices(player).includes(position) &&
+      (before.pits[position] === 2 || before.pits[position] === 3)
+    ) {
+      capturedIndices.push(position);
+      position = (position + 1) % 12;
     }
-
-    function computerMove() {
-      if (!started || gameOver || currentPlayer !== AI) {
-        return;
-      }
-
-      const state = {
-        pits,
-        scores,
-        currentPlayer
-      };
-
-      const moves = legalMoves(state, AI);
-
-      if (moves.length === 0) {
-        if (!checkGameEnd()) {
-          setStatus("Aucun coup possible. La partie est terminée.");
-        }
-        return;
-      }
-
-      // Search several moves ahead.
-      // Reduce depth slightly if there are many candidate moves.
-      const depth = moves.length > 8 ? 4 : 5;
-
-      const decision = minimax(
-        state,
-        depth,
-        -Infinity,
-        Infinity,
-        AI
-      );
-
-      const chosenMove = decision.move ?? moves[0];
-      const result = applyMove(state, chosenMove, AI);
-
-      pits = result.state.pits;
-      scores = result.state.scores;
-      currentPlayer = HUMAN;
-
-      render();
-
-      setStatus(
-        result.captured
-          ? `L'ordinateur capture ${result.captured} graine(s). À toi de jouer.`
-          : "À toi de jouer : choisis une de tes cases."
-      );
-
-      checkGameEnd();
-    }
+  }
+  await new Promise(resolve => setTimeout(resolve, 300));
+  return result;
+}
+async function humanMove(index) {
+  if (!started || gameOver || currentPlayer !== HUMAN) return;
+  const moves = legalMoves(
+    { pits, scores, currentPlayer },
+    HUMAN
+  );
+  if (!moves.includes(index)) {
+    setStatus("Choisis une case autorisée contenant des graines.");
+    return;
+  }
+  currentPlayer = AI;
+  setStatus("Tu distribues les graines…");
+  render();
+  const result = await animateMove(index, HUMAN);
+  if (checkGameEnd()) return;
+  setStatus(
+    result.captured > 0
+      ? `Tu captures ${result.captured} graine(s) ! L'ordinateur réfléchit…`
+      : "L'ordinateur réfléchit…"
+  );
+  aiTimer = setTimeout(computerMove, 600);
+}
+async function computerMove() {
+  if (!started || gameOver || currentPlayer !== AI) return;
+  const state = {
+    pits: pits.slice(),
+    scores: scores.slice(),
+    currentPlayer
+  };
+  const moves = legalMoves(state, AI);
+  if (!moves.length) {
+    checkGameEnd();
+    return;
+  }
+  setStatus("L'ordinateur choisit sa case…");
+  await new Promise(resolve => setTimeout(resolve, 500));
+  if (!started || gameOver || currentPlayer !== AI) return;
+  const depth = moves.length > 8 ? 4 : 5;
+  const decision = minimax(state, depth, -Infinity, Infinity, AI);
+  const move = decision.move ?? moves[0];
+  setStatus("L'ordinateur distribue les graines…");
+  const result = await animateMove(move, AI);
+  if (checkGameEnd()) return;
+  setStatus(
+    result.captured > 0
+      ? `L'ordinateur capture ${result.captured} graine(s). À toi de jouer.`
+      : "À toi de jouer : choisis une de tes cases."
+  );
+}
 
     function startGame() {
       if (aiTimer) {
