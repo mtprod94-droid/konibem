@@ -932,15 +932,18 @@ playerPitsEl.classList.toggle(
 
       if (scores[HUMAN] > scores[AI]) {
   setStatus(
-    `🏆 VICTOIRE ! Tu remportes la partie ${scores[HUMAN]} à ${scores[AI]}. Félicitations !`
+    `🏆 VICTOIRE ! Tu remportes la partie ${scores[HUMAN]} à ${scores[AI]}. Félicitations !`,
+    "win"
   );
 } else if (scores[AI] > scores[HUMAN]) {
   setStatus(
-    `🤖 FIN DE PARTIE ! L'ordinateur gagne ${scores[AI]} à ${scores[HUMAN]}. Prends ta revanche !`
+    `🤖 FIN DE PARTIE ! L'ordinateur gagne ${scores[AI]} à ${scores[HUMAN]}. Prends ta revanche !`,
+    "loss"
   );
 } else {
   setStatus(
-    `🤝 MATCH NUL ! Vous terminez à égalité : ${scores[HUMAN]} à ${scores[AI]}.`
+    `🤝 MATCH NUL ! Vous terminez à égalité : ${scores[HUMAN]} à ${scores[AI]}.`,
+    "draw"
   );
 }
 
