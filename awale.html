@@ -1216,80 +1216,75 @@ async function humanMove(index) {
 }
 async function computerMove() {
   if (!started || gameOver || currentPlayer !== AI) return;
+
   const state = {
     pits: pits.slice(),
     scores: scores.slice(),
     currentPlayer
   };
+
   const moves = legalMoves(state, AI);
+
   if (!moves.length) {
     checkGameEnd();
     return;
   }
+
   setStatus("L'ordinateur choisit sa case…");
+
   await new Promise(resolve => setTimeout(resolve, 500));
+
   if (!started || gameOver || currentPlayer !== AI) return;
+
   const difficulty = document.getElementById("difficulty-select").value;
-const difficultyDescription = document.getElementById(
-  "difficulty-description"
-);
 
-function updateDifficultyDescription() {
-  const descriptions = {
-    easy: "Idéal pour les débutants.",
-    medium: "Un défi équilibré.",
-    hard: "Pour les joueurs expérimentés."
-  };
+  let depth;
 
-  const difficultyLevel = difficulty.value;
-
-  difficultyDescription.textContent =
-    descriptions[difficultyLevel] || descriptions.medium;
-
-  difficultyDescription.classList.remove(
-    "easy",
-    "medium",
-    "hard"
-  );
-
-  difficultyDescription.classList.add(
-    descriptions[difficultyLevel] ? difficultyLevel : "medium"
-  );
-}
-
-difficulty.addEventListener("change", updateDifficultyDescription);
-updateDifficultyDescription();
-
-let depth;
-
-if (difficulty === "easy") {
-  depth = 2;
-} else if (difficulty === "medium") {
-  depth = moves.length > 8 ? 4 : 5;
-} else {
-  depth = moves.length > 8 ? 5 : 6;
-}
-  const decision = minimax(state, depth, -Infinity, Infinity, AI);
-let move = decision.move ?? moves[0];
-
-if (difficulty === "easy" && moves.length > 1 && Math.random() < 0.35) {
-  const alternativeMoves = moves.filter(candidate => candidate !== move);
-
-  if (alternativeMoves.length > 0) {
-    move = alternativeMoves[
-      Math.floor(Math.random() * alternativeMoves.length)
-    ];
+  if (difficulty === "easy") {
+    depth = 2;
+  } else if (difficulty === "medium") {
+    depth = moves.length > 8 ? 4 : 5;
+  } else {
+    depth = moves.length > 8 ? 5 : 6;
   }
-}
+
+  const decision = minimax(
+    state,
+    depth,
+    -Infinity,
+    Infinity,
+    AI
+  );
+
+  let move = decision.move ?? moves[0];
+
+  if (
+    difficulty === "easy" &&
+    moves.length > 1 &&
+    Math.random() < 0.35
+  ) {
+    const alternativeMoves = moves.filter(
+      candidate => candidate !== move
+    );
+
+    if (alternativeMoves.length > 0) {
+      move = alternativeMoves[
+        Math.floor(Math.random() * alternativeMoves.length)
+      ];
+    }
+  }
+
   setStatus("L'ordinateur distribue les graines…");
+
   const result = await animateMove(move, AI);
+
   if (checkGameEnd()) return;
 
-setStatus(
-  result.captured > 0
-    ? `L'ordinateur capture ${result.captured} graine${result.captured > 1 ? "s" : ""}. À toi de jouer !`
-    : "À toi de jouer ! Choisis une de tes cases."
-);
+  setStatus(
+    result.captured > 0
+      ? `L'ordinateur capture ${result.captured} graine${result.captured > 1 ? "s" : ""}. À toi de jouer !`
+      : "À toi de jouer ! Choisis une de tes cases."
+  );
 }
 
     function startGame() {
