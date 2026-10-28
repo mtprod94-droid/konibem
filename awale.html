@@ -925,16 +925,18 @@ playerPitsEl.classList.toggle(
       render();
 
       if (scores[HUMAN] > scores[AI]) {
-        setStatus(
-          `Partie terminée : tu gagnes ${scores[HUMAN]} à ${scores[AI]} ! Bravo !`
-        );
-      } else if (scores[AI] > scores[HUMAN]) {
-        setStatus(
-          `Partie terminée : l'ordinateur gagne ${scores[AI]} à ${scores[HUMAN]}. Essaie encore !`
-        );
-      } else {
-        setStatus(`Match nul : ${scores[HUMAN]} à ${scores[AI]}.`);
-      }
+  setStatus(
+    `🏆 VICTOIRE ! Tu remportes la partie ${scores[HUMAN]} à ${scores[AI]}. Félicitations !`
+  );
+} else if (scores[AI] > scores[HUMAN]) {
+  setStatus(
+    `🤖 FIN DE PARTIE ! L'ordinateur gagne ${scores[AI]} à ${scores[HUMAN]}. Prends ta revanche !`
+  );
+} else {
+  setStatus(
+    `🤝 MATCH NUL ! Vous terminez à égalité : ${scores[HUMAN]} à ${scores[AI]}.`
+  );
+}
 
       return true;
     }
