@@ -1241,8 +1241,20 @@ function updateDifficultyDescription() {
     hard: "Pour les joueurs expérimentés."
   };
 
+  const difficultyLevel = difficulty.value;
+
   difficultyDescription.textContent =
-    descriptions[difficulty.value] || descriptions.medium;
+    descriptions[difficultyLevel] || descriptions.medium;
+
+  difficultyDescription.classList.remove(
+    "easy",
+    "medium",
+    "hard"
+  );
+
+  difficultyDescription.classList.add(
+    descriptions[difficultyLevel] ? difficultyLevel : "medium"
+  );
 }
 
 difficulty.addEventListener("change", updateDifficultyDescription);
