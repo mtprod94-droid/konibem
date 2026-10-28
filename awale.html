@@ -900,9 +900,15 @@ playerPitsEl.classList.toggle(
 );
     }
 
-    function setStatus(message) {
-      statusEl.textContent = message;
-    }
+    function setStatus(message, type = "") {
+  statusEl.textContent = message;
+
+  statusEl.classList.remove("status-win", "status-loss", "status-draw");
+
+  if (type) {
+    statusEl.classList.add(`status-${type}`);
+  }
+}
 
     function checkGameEnd() {
       const state = {
