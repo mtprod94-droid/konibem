@@ -1029,10 +1029,10 @@ async function computerMove() {
   const result = await animateMove(move, AI);
   if (checkGameEnd()) return;
   setStatus(
-    result.captured > 0
-      ? `L'ordinateur capture ${result.captured} graine(s). À toi de jouer.`
-      : "À toi de jouer : choisis une de tes cases."
-  );
+result.captured > 0
+? L'ordinateur capture ${result.captured} graine${result.captured > 1 ? "s" : ""}. À toi de jouer !
+: “À toi de jouer ! Choisis une de tes cases.”
+);
 }
 
     function startGame() {
