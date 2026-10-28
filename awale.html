@@ -705,17 +705,50 @@ button.pit.last-move {
     }
 
     function evaluate(state, perspective) {
-      const opponent = 1 - perspective;
+  const opponent = 1 - perspective;
 
-      const scoreDifference =
-        state.scores[perspective] - state.scores[opponent];
+  // 1. Punktestand bewerten
+  const scoreDifference =
+    state.scores[perspective] - state.scores[opponent];
 
-      const remainingSeedsDifference =
-        sideTotal(perspective, state.pits) -
-        sideTotal(opponent, state.pits);
+  // 2. Verbleibende Samen bewerten
+  const remainingSeedsDifference =
+    sideTotal(perspective, state.pits) -
+    sideTotal(opponent, state.pits);
 
-      return scoreDifference * 12 + remainingSeedsDifference * 0.35;
+  // 3. Beste unmittelbare Fangchance jeder Seite ermitteln
+  function bestCaptureFor(player) {
+    const playerState = {
+      pits: state.pits.slice(),
+      scores: state.scores.slice(),
+      currentPlayer: player
+    };
+
+    const moves = legalMoves(playerState, player);
+    let bestCapture = 0;
+
+    for (const move of moves) {
+      const result = applyMove(playerState, move, player);
+
+      if (result.captured > bestCapture) {
+        bestCapture = result.captured;
+      }
     }
+
+    return bestCapture;
+  }
+
+  const myBestCapture = bestCaptureFor(perspective);
+  const opponentBestCapture = bestCaptureFor(opponent);
+
+  // 4. Gesamtbewertung berechnen
+  return (
+    scoreDifference * 12 +
+    remainingSeedsDifference * 0.35 +
+    myBestCapture * 2 -
+    opponentBestCapture * 2
+  );
+}
 
     // Minimax with alpha-beta pruning.
     function minimax(state, depth, alpha, beta, perspective) {
