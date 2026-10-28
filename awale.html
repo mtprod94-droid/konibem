@@ -770,6 +770,14 @@ button.pit.last-move {
         };
       }
 
+// Prioritize moves that capture the most seeds.
+moves.sort((a, b) => {
+  const captureA = applyMove(state, a, state.currentPlayer).captured;
+  const captureB = applyMove(state, b, state.currentPlayer).captured;
+
+  return captureB - captureA;
+});
+
       const maximizing = state.currentPlayer === perspective;
 
       let bestMove = moves[0];
