@@ -194,7 +194,7 @@
       while (enemy.includes(index) && (board[index] === 2 || board[index] === 3)) {
         captured += board[index];
         board[index] = 0;
-        index = (index + 1) % 12;
+        index = (index + 11) % 12;
       }
     }
 
