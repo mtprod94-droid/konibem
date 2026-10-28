@@ -513,6 +513,51 @@ button.pit.last-move {
   color: #f5d58a;
   background-color: #111111;
 }
+
+/* KONIBEM – Beschreibung der Schwierigkeitsstufen */
+.difficulty-description {
+  margin: 8px auto 16px;
+  padding: 8px 12px;
+
+  max-width: 320px;
+
+  color: #c9a96e;
+  background: rgba(201, 169, 110, 0.06);
+
+  border: 1px solid rgba(201, 169, 110, 0.25);
+  border-radius: 8px;
+
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.3px;
+
+  transition:
+    color 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+/* Leicht */
+.difficulty-description.easy {
+  color: #7bd88f;
+  border-color: rgba(123, 216, 143, 0.4);
+  background: rgba(123, 216, 143, 0.06);
+}
+
+/* Mittel */
+.difficulty-description.medium {
+  color: #c9a96e;
+  border-color: rgba(201, 169, 110, 0.4);
+  background: rgba(201, 169, 110, 0.06);
+}
+
+/* Schwer */
+.difficulty-description.hard {
+  color: #ef8b83;
+  border-color: rgba(239, 139, 131, 0.4);
+  background: rgba(239, 139, 131, 0.06);
+}
   </style>
 </head>
 
