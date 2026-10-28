@@ -526,14 +526,26 @@ button.pit.last-move {
       </div>
 
       <div class="controls">
-        <button class="control-btn primary" id="start-btn" type="button">
-          COMMENCER LA PARTIE
-        </button>
 
-        <button class="control-btn secondary" id="restart-btn" type="button">
-          RECOMMENCER
-        </button>
-      </div>
+  <label for="difficulty-select" class="difficulty-label">
+    NIVEAU DE DIFFICULTÉ
+  </label>
+
+  <select id="difficulty-select" class="control-btn secondary">
+    <option value="easy">FACILE</option>
+    <option value="medium" selected>MOYEN</option>
+    <option value="hard">DIFFICILE</option>
+  </select>
+
+  <button class="control-btn primary" id="start-btn" type="button">
+    COMMENCER LA PARTIE
+  </button>
+
+  <button class="control-btn secondary" id="restart-btn" type="button">
+    RECOMMENCER
+  </button>
+
+</div>
 
       <section class="rules">
         <h2>À propos de l'Awalé</h2>
