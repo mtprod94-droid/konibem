@@ -1148,7 +1148,17 @@ if (difficulty === "easy") {
   depth = moves.length > 8 ? 5 : 6;
 }
   const decision = minimax(state, depth, -Infinity, Infinity, AI);
-  const move = decision.move ?? moves[0];
+let move = decision.move ?? moves[0];
+
+if (difficulty === "easy" && moves.length > 1 && Math.random() < 0.35) {
+  const alternativeMoves = moves.filter(candidate => candidate !== move);
+
+  if (alternativeMoves.length > 0) {
+    move = alternativeMoves[
+      Math.floor(Math.random() * alternativeMoves.length)
+    ];
+  }
+}
   setStatus("L'ordinateur distribue les graines…");
   const result = await animateMove(move, AI);
   if (checkGameEnd()) return;
