@@ -1089,10 +1089,11 @@ async function computerMove() {
   setStatus("L'ordinateur distribue les graines…");
   const result = await animateMove(move, AI);
   if (checkGameEnd()) return;
-  setStatus(
-result.captured > 0
-? L'ordinateur capture ${result.captured} graine${result.captured > 1 ? "s" : ""}. À toi de jouer !
-: “À toi de jouer ! Choisis une de tes cases.”
+
+setStatus(
+  result.captured > 0
+    ? `L'ordinateur capture ${result.captured} graine${result.captured > 1 ? "s" : ""}. À toi de jouer !`
+    : "À toi de jouer ! Choisis une de tes cases."
 );
 }
 
