@@ -7,647 +7,95 @@
   <meta name="description" content="Joue à l'Awalé sur KONIBEM, la plateforme des jeux traditionnels africains.">
   <title>KONIBEM — AWALÉ</title>
   <link rel="stylesheet" href="css/style.css">
-
   <style>
-    :root {
-      --gold: #c9a96e;
-      --dark: #080808;
-      --panel: #141414;
-      --line: rgba(201,169,110,.35);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: var(--dark);
-      color: #f4efe5;
-      font-family: Arial, sans-serif;
-    }
-
-    .awale-page {
-      width: min(100% - 24px, 900px);
-      margin: 0 auto;
-      padding-bottom: 40px;
-    }
-
-    .awale-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .awale-header img {
-      display: block;
-      width: 112px;
-      max-width: 35vw;
-      max-height: 50px;
-      object-fit: contain;
-      object-position: left center;
-    }
-
-    .home-link {
-      color: var(--gold);
-      text-decoration: none;
-      font-size: 13px;
-    }
-
-    .game-intro {
-      text-align: center;
-      padding: 26px 0 16px;
-    }
-
-    .game-intro h1 {
-      margin: 0;
-      color: var(--gold);
-      font-size: clamp(32px, 8vw, 54px);
-      letter-spacing: 4px;
-    }
-
-    .game-intro p {
-      color: #c9c0b1;
-      margin: 8px 0 0;
-      font-size: 13px;
-      letter-spacing: 1px;
-    }
-
-    .scoreboard {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin: 12px 0 18px;
-    }
-
-    .score {
-      border: 1px solid var(--line);
-      background: var(--panel);
-      border-radius: 12px;
-      padding: 12px;
-      text-align: center;
-    }
-
-    .score span {
-      display: block;
-      color: #c9c0b1;
-      font-size: 11px;
-      letter-spacing: 1.2px;
-    }
-
-    .score strong {
-      display: block;
-      color: var(--gold);
-      font-size: 30px;
-      margin-top: 3px;
-    }
-
-    .board-wrap {
-  position: relative;
-  border: 1px solid rgba(201, 169, 110, 0.65);
-  border-radius: 18px;
-  padding: 12px;
-  background:
-    repeating-linear-gradient(
-      7deg,
-      transparent 0px,
-      transparent 13px,
-      rgba(201, 169, 110, 0.025) 14px,
-      transparent 16px
-    ),
-    radial-gradient(
-      ellipse at 50% 0%,
-      rgba(201, 169, 110, 0.12),
-      transparent 65%
-    ),
-    linear-gradient(
-      145deg,
-      #302317 0%,
-      #19120c 35%,
-      #0b0a08 72%,
-      #21170e 100%
-    );
-  box-shadow:
-    inset 0 1px 0 rgba(255, 226, 170, 0.12),
-    inset 0 -3px 8px rgba(0, 0, 0, 0.55),
-    0 12px 36px rgba(0, 0, 0, 0.55),
-    0 0 0 1px rgba(201, 169, 110, 0.08);
-}
-/* KONIBEM – sichtbare Bewegung einzelner Awalé-Steine */
-.board-wrap {
-  position: relative;
-  overflow: hidden;
-}
-
-.moving-seed {
-  position: fixed;
-  z-index: 9999;
-  width: 12px;
-  height: 16px;
-  border-radius: 55% 45% 48% 52%;
-  background: radial-gradient(
-    ellipse at 30% 25%,
-    #f6e4b4 0%,
-    #c9a96e 35%,
-    #8a6030 72%,
-    #49301a 100%
-  );
-  border: 1px solid rgba(50, 30, 10, .7);
-  box-shadow:
-    inset -1px -1px 2px rgba(35, 20, 5, .55),
-    0 2px 4px rgba(0, 0, 0, .5);
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  transition:
-    left 260ms ease-in-out,
-    top 260ms ease-in-out;
-  will-change: left, top;
-}
-@keyframes seed-landing {
-  0% {
-    transform: translate(-50%, -50%) scale(1.15, 0.85) rotate(-8deg);
-  }
-  35% {
-    transform: translate(-50%, -50%) scale(0.88, 1.12) rotate(5deg);
-  }
-  65% {
-    transform: translate(-50%, -50%) scale(1.05, 0.95) rotate(-3deg);
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1, 1) rotate(0deg);
-  }
-}
-.moving-seed.landing {
-  animation: seed-landing 180ms ease-out forwards;
-}
-    .row-label {
-      display: flex;
-      justify-content: space-between;
-      color: var(--gold);
-      font-size: 11px;
-      letter-spacing: 1.3px;
-      margin: 2px 2px 8px;
-    }
-
-    .pits {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 6px;
-    }
-
-    .pit {
-  appearance: none;
-  border: 1px solid rgba(201, 169, 110, 0.65);
-  border-radius: 50%;
-  aspect-ratio: 1 / 1;
-  min-width: 0;
-  padding: 0;
-  background:
-    radial-gradient(
-      ellipse at 35% 25%,
-      rgba(95, 72, 42, 0.35) 0%,
-      transparent 35%
-    ),
-    radial-gradient(
-      ellipse at 50% 45%,
-      #080706 0%,
-      #15110c 48%,
-      #302419 72%,
-      #6d5030 88%,
-      #17120c 100%
-    );
-  color: #f8e6bd;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  font: inherit;
-  box-shadow:
-    inset 0 5px 10px rgba(0, 0, 0, 0.85),
-    inset 0 -2px 4px rgba(201, 169, 110, 0.12),
-    0 2px 3px rgba(0, 0, 0, 0.55);
-  transition:
-    border-color 180ms ease,
-    box-shadow 180ms ease;
-}
-
-    button.pit {
-      cursor: pointer;
-    }
-
-    button.pit:disabled {
-      cursor: default;
-      opacity: .65;
-    }
-
-    button.pit.legal {
-      border-color: var(--gold);
-      box-shadow:
-        0 0 0 2px rgba(201,169,110,.14),
-        0 0 14px rgba(201,169,110,.13);
-    }
-    
-button.pit.last-move {
-  border-color: #ffe0a0;
-  box-shadow:
-    0 0 0 3px rgba(255, 224, 160, 0.3),
-    0 0 18px rgba(255, 215, 130, 0.55),
-    inset 0 0 12px rgba(255, 215, 130, 0.18);
-}
-
-.pit-count {
-  display: flex;
-  flex-wrap: wrap;
-  align-content: center;
-  justify-content: center;
-  align-items: center;
-  gap: 2px;
-  width: 88%;
-  height: 76%;
-  overflow: hidden;
-  padding: 3px;
-}
-.seed {
-  display: block;
-  flex: 0 0 clamp(5px, 1.5vw, 9px);
-  width: clamp(5px, 1.5vw, 9px);
-  height: clamp(7px, 1.9vw, 12px);
-  border-radius: 48% 52% 43% 57%;
-  background:
-    radial-gradient(
-      ellipse at 28% 22%,
-      rgba(255, 248, 220, 0.95) 0%,
-      rgba(246, 228, 180, 0.95) 10%,
-      transparent 30%
-    ),
-    radial-gradient(
-      ellipse at 32% 27%,
-      #e8c987 0%,
-      #c9a96e 30%,
-      #9b6d38 62%,
-      #62401f 83%,
-      #382413 100%
-    );
-  border: 1px solid rgba(64, 40, 17, 0.8);
-  box-shadow:
-    inset 1px 1px 1px rgba(255, 244, 210, 0.45),
-    inset -1px -1px 2px rgba(35, 20, 5, 0.65),
-    0 1px 2px rgba(0, 0, 0, 0.65);
-  transform: rotate(var(--seed-rotation, 0deg));
-}
-.pit-index {
-  display: none;
-}
-
-    .middle-lane {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 10px 0;
-      color: #b8a98f;
-      font-size: 11px;
-    }
-
-    .middle-lane::before,
-    .middle-lane::after {
-      content: "";
-      height: 1px;
-      background: var(--line);
-      flex: 1;
-    }
-
-    .status {
-      text-align: center;
-      min-height: 44px;
-      padding: 13px 10px;
-      color: #e9d7b3;
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-/* KONIBEM – Résultats de fin de partie */
-
-.status.status-win {
-  color: #ffe0a0;
-  font-weight: 700;
-  border: 1px solid rgba(255, 215, 130, 0.65);
-  border-radius: 10px;
-  background: rgba(201, 169, 110, 0.12);
-  box-shadow:
-    0 0 12px rgba(255, 215, 130, 0.22),
-    inset 0 0 10px rgba(255, 215, 130, 0.08);
-}
-
-/* KONIBEM – Animation de victoire */
-@keyframes konibem-victory {
-  0% {
-    opacity: 0.6;
-    transform: scale(0.98);
-    box-shadow: 0 0 0 rgba(255, 215, 130, 0);
-  }
-
-  100% {
-    opacity: 1;
-    transform: scale(1);
-    box-shadow:
-      0 0 12px rgba(255, 215, 130, 0.22),
-      inset 0 0 10px rgba(255, 215, 130, 0.08);
-  }
-}
-
-.status.status-win {
-  animation: konibem-victory 0.6s ease-out;
-}
-
-.status.status-loss {
-  color: #e9b7a8;
-  font-weight: 600;
-  border: 1px solid rgba(180, 100, 80, 0.45);
-  border-radius: 10px;
-  background: rgba(120, 45, 35, 0.12);
-}
-
-.status.status-draw {
-  color: #e9d7b3;
-  font-weight: 600;
-  border: 1px solid rgba(201, 169, 110, 0.4);
-  border-radius: 10px;
-  background: rgba(201, 169, 110, 0.07);
-}
-
-    .controls {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .control-btn {
-      min-height: 46px;
-      border-radius: 9px;
-      padding: 11px 8px;
-      font-weight: 700;
-      font-size: 12px;
-      letter-spacing: .5px;
-      cursor: pointer;
-    }
-
-    .primary {
-      border: 1px solid var(--gold);
-      background: var(--gold);
-      color: #15110a;
-    }
-
-    .secondary {
-      border: 1px solid var(--line);
-      background: #151515;
-      color: var(--gold);
-    }
-
-    .rules {
-      margin-top: 22px;
-      padding: 16px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: #101010;
-    }
-
-    .rules h2 {
-      margin: 0 0 8px;
-      font-size: 17px;
-      color: var(--gold);
-    }
-
-    .rules p,
-    .rules li {
-      color: #c9c0b1;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .rules ul {
-      padding-left: 19px;
-      margin-bottom: 0;
-    }
-
-    @media (max-width: 380px) {
-      .awale-page {
-        width: calc(100% - 16px);
-      }
-
-      .board-wrap {
-        padding: 8px;
-      }
-
-      .pits {
-        gap: 4px;
-      }
-
-      .pit-index {
-        font-size: 8px;
-      }
-
-      .controls {
-        grid-template-columns: 1fr;
-      }
-
-      .game-intro {
-        padding-top: 20px;
-      }
-    }
-    /* KONIBEM – mise en évidence du joueur actif */
-#player-pits.active-turn,
-#computer-pits.active-turn {
-  border-color: var(--gold);
-  box-shadow:
-    0 0 0 2px rgba(201, 169, 110, 0.2),
-    0 0 18px rgba(201, 169, 110, 0.22);
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
-}
-
-/* KONIBEM – Premium-Auswahl der Schwierigkeitsstufe */
-#difficulty-select {
-  display: block;
-  width: 100%;
-  max-width: 320px;
-  margin: 0 auto 14px;
-  padding: 14px 18px;
-
-  color: #f5d58a;
-  background-color: #111111;
-
-  border: 1px solid #c9a96e;
-  border-radius: 10px;
-
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 1px;
-
-  cursor: pointer;
-  appearance: auto;
-
-  box-shadow:
-    0 0 10px rgba(201, 169, 110, 0.12),
-    inset 0 0 8px rgba(201, 169, 110, 0.05);
-
-  transition:
-    border-color 0.25s ease,
-    box-shadow 0.25s ease;
-}
-
-#difficulty-select:focus {
-  outline: none;
-  border-color: #ffe0a0;
-
-  box-shadow:
-    0 0 0 3px rgba(201, 169, 110, 0.18),
-    0 0 16px rgba(201, 169, 110, 0.25);
-}
-
-#difficulty-select option {
-  color: #f5d58a;
-  background-color: #111111;
-}
-
-/* KONIBEM – Beschreibung der Schwierigkeitsstufen */
-.difficulty-description {
-  margin: 8px auto 16px;
-  padding: 8px 12px;
-
-  max-width: 320px;
-
-  color: #c9a96e;
-  background: rgba(201, 169, 110, 0.06);
-
-  border: 1px solid rgba(201, 169, 110, 0.25);
-  border-radius: 8px;
-
-  font-size: 13px;
-  font-weight: 600;
-  text-align: center;
-  letter-spacing: 0.3px;
-
-  transition:
-    color 0.25s ease,
-    border-color 0.25s ease,
-    background 0.25s ease;
-}
-
-/* Leicht */
-.difficulty-description.easy {
-  color: #7bd88f;
-  border-color: rgba(123, 216, 143, 0.4);
-  background: rgba(123, 216, 143, 0.06);
-}
-
-/* Mittel */
-.difficulty-description.medium {
-  color: #c9a96e;
-  border-color: rgba(201, 169, 110, 0.4);
-  background: rgba(201, 169, 110, 0.06);
-}
-
-/* Schwer */
-.difficulty-description.hard {
-  color: #ef8b83;
-  border-color: rgba(239, 139, 131, 0.4);
-  background: rgba(239, 139, 131, 0.06);
-}
+    :root{--gold:#c9a96e;--dark:#080808;--panel:#141414;--line:rgba(201,169,110,.35)}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--dark);color:#f4efe5;font-family:Arial,sans-serif}
+    .awale-page{width:min(100% - 24px,900px);margin:0 auto;padding-bottom:40px}
+    .awale-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+    .awale-header img{display:block;width:112px;max-width:35vw;max-height:50px;object-fit:contain;object-position:left center}
+    .home-link{color:var(--gold);text-decoration:none;font-size:13px}
+    .game-intro{text-align:center;padding:26px 0 16px}
+    .game-intro h1{margin:0;color:var(--gold);font-size:clamp(32px,8vw,54px);letter-spacing:4px}
+    .game-intro p{color:#c9c0b1;margin:8px 0 0;font-size:13px;letter-spacing:1px}
+    .scoreboard{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 18px}
+    .score{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:12px;text-align:center}
+    .score span{display:block;color:#c9c0b1;font-size:11px;letter-spacing:1.2px}
+    .score strong{display:block;color:var(--gold);font-size:30px;margin-top:3px}
+    .board-wrap{position:relative;overflow:hidden;border:1px solid rgba(201,169,110,.65);border-radius:18px;padding:12px;background:repeating-linear-gradient(7deg,transparent 0,transparent 13px,rgba(201,169,110,.025) 14px,transparent 16px),radial-gradient(ellipse at 50% 0%,rgba(201,169,110,.12),transparent 65%),linear-gradient(145deg,#302317 0%,#19120c 35%,#0b0a08 72%,#21170e 100%);box-shadow:inset 0 1px 0 rgba(255,226,170,.12),inset 0 -3px 8px rgba(0,0,0,.55),0 12px 36px rgba(0,0,0,.55),0 0 0 1px rgba(201,169,110,.08)}
+    .row-label{display:flex;justify-content:space-between;color:var(--gold);font-size:11px;letter-spacing:1.3px;margin:2px 2px 8px}
+    .pits{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+    .pit{appearance:none;border:1px solid rgba(201,169,110,.65);border-radius:50%;aspect-ratio:1;min-width:0;padding:0;background:radial-gradient(ellipse at 35% 25%,rgba(95,72,42,.35) 0%,transparent 35%),radial-gradient(ellipse at 50% 45%,#080706 0%,#15110c 48%,#302419 72%,#6d5030 88%,#17120c 100%);color:#f8e6bd;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:inherit;box-shadow:inset 0 5px 10px rgba(0,0,0,.85),inset 0 -2px 4px rgba(201,169,110,.12),0 2px 3px rgba(0,0,0,.55);transition:border-color 180ms ease,box-shadow 180ms ease}
+    button.pit{cursor:pointer}
+    button.pit:disabled{cursor:default;opacity:.75}
+    button.pit.legal{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,169,110,.14),0 0 14px rgba(201,169,110,.13)}
+    button.pit.last-move{border-color:#ffe0a0;box-shadow:0 0 0 3px rgba(255,224,160,.3),0 0 18px rgba(255,215,130,.55),inset 0 0 12px rgba(255,215,130,.18)}
+    .pit-count{display:flex;flex-wrap:wrap;align-content:center;justify-content:center;align-items:center;gap:2px;width:88%;height:76%;overflow:hidden;padding:3px}
+    .seed{display:block;flex:0 0 clamp(5px,1.5vw,9px);width:clamp(5px,1.5vw,9px);height:clamp(7px,1.9vw,12px);border-radius:48% 52% 43% 57%;background:radial-gradient(ellipse at 28% 22%,rgba(255,248,220,.95) 0%,rgba(246,228,180,.95) 10%,transparent 30%),radial-gradient(ellipse at 32% 27%,#e8c987 0%,#c9a96e 30%,#9b6d38 62%,#62401f 83%,#382413 100%);border:1px solid rgba(64,40,17,.8);box-shadow:inset 1px 1px 1px rgba(255,244,210,.45),inset -1px -1px 2px rgba(35,20,5,.65),0 1px 2px rgba(0,0,0,.65);transform:rotate(var(--seed-rotation,0deg))}
+    .pit-index{display:none}
+    .middle-lane{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 0;color:#b8a98f;font-size:11px}
+    .middle-lane:before,.middle-lane:after{content:"";height:1px;background:var(--line);flex:1}
+    .status{text-align:center;min-height:44px;padding:13px 10px;color:#e9d7b3;font-size:13px;line-height:1.45;border-radius:10px}
+    .status.status-win{color:#ffe0a0;font-weight:700;border:1px solid rgba(255,215,130,.65);background:rgba(201,169,110,.12);box-shadow:0 0 12px rgba(255,215,130,.22),inset 0 0 10px rgba(255,215,130,.08);animation:konibem-victory .6s ease-out}
+    .status.status-loss{color:#e9b7a8;font-weight:600;border:1px solid rgba(180,100,80,.45);background:rgba(120,45,35,.12)}
+    .status.status-draw{color:#e9d7b3;font-weight:600;border:1px solid rgba(201,169,110,.4);background:rgba(201,169,110,.07)}
+    @keyframes konibem-victory{0%{opacity:.6;transform:scale(.98)}100%{opacity:1;transform:scale(1)}}
+    #player-pits.active-turn,#computer-pits.active-turn{border-radius:12px;outline:1px solid rgba(201,169,110,.65);outline-offset:3px;box-shadow:0 0 18px rgba(201,169,110,.15);transition:box-shadow .3s ease}
+    .controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+    .difficulty-label{grid-column:1/-1;text-align:center;color:var(--gold);font-size:11px;font-weight:700;letter-spacing:1.3px}
+    .control-btn{min-height:46px;border-radius:9px;padding:11px 8px;font-weight:700;font-size:12px;letter-spacing:.5px;cursor:pointer}
+    .primary{border:1px solid var(--gold);background:var(--gold);color:#15110a}
+    .secondary{border:1px solid var(--line);background:#151515;color:var(--gold)}
+    #difficulty-select{grid-column:1/-1;display:block;width:100%;max-width:320px;justify-self:center;margin:0 auto 2px;padding:14px 18px;color:#f5d58a;background:#111;border:1px solid var(--gold);border-radius:10px;font-size:15px;font-weight:700;letter-spacing:1px;cursor:pointer}
+    #difficulty-select:focus{outline:2px solid rgba(201,169,110,.4);outline-offset:2px}
+    #difficulty-select option{color:#f5d58a;background:#111}
+    .difficulty-description{grid-column:1/-1;margin:0 auto 8px;padding:8px 12px;width:100%;max-width:320px;color:var(--gold);background:rgba(201,169,110,.06);border:1px solid rgba(201,169,110,.25);border-radius:8px;font-size:13px;font-weight:600;text-align:center;letter-spacing:.3px;transition:color .25s,border-color .25s,background .25s}
+    .difficulty-description.easy{color:#7bd88f;border-color:rgba(123,216,143,.4);background:rgba(123,216,143,.06)}
+    .difficulty-description.medium{color:#c9a96e;border-color:rgba(201,169,110,.4);background:rgba(201,169,110,.06)}
+    .difficulty-description.hard{color:#ef8b83;border-color:rgba(239,139,131,.4);background:rgba(239,139,131,.06)}
+    .rules{margin-top:22px;padding:16px;border:1px solid var(--line);border-radius:12px;background:#101010}
+    .rules h2{margin:0 0 8px;font-size:17px;color:var(--gold)}
+    .rules p,.rules li{color:#c9c0b1;font-size:13px;line-height:1.6}
+    .rules ul{padding-left:19px;margin-bottom:0}
+    .moving-seed{position:fixed;z-index:9999;width:12px;height:16px;border-radius:55% 45% 48% 52%;background:radial-gradient(ellipse at 30% 25%,#f6e4b4 0%,#c9a96e 35%,#8a6030 72%,#49301a 100%);border:1px solid rgba(50,30,10,.7);box-shadow:inset -1px -1px 2px rgba(35,20,5,.55),0 2px 4px rgba(0,0,0,.5);pointer-events:none;transform:translate(-50%,-50%);transition:left 260ms ease-in-out,top 260ms ease-in-out;will-change:left,top}
+    @keyframes seed-landing{0%{transform:translate(-50%,-50%) scale(1.15,.85) rotate(-8deg)}35%{transform:translate(-50%,-50%) scale(.88,1.12) rotate(5deg)}65%{transform:translate(-50%,-50%) scale(1.05,.95) rotate(-3deg)}100%{transform:translate(-50%,-50%) scale(1) rotate(0)}}
+    .moving-seed.landing{animation:seed-landing 180ms ease-out forwards}
+    @media(max-width:380px){.awale-page{width:calc(100% - 16px)}.board-wrap{padding:8px}.pits{gap:4px}.controls{grid-template-columns:1fr}.difficulty-label,#difficulty-select,.difficulty-description{grid-column:1}.game-intro{padding-top:20px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
   </style>
 </head>
-
 <body>
   <div class="awale-page">
-
     <header class="awale-header">
-      <a href="index.html" aria-label="Accueil KONIBEM">
-        <img src="images/MT.KONIBEM.PNG" alt="Logo KONIBEM">
-      </a>
-
+      <a href="index.html" aria-label="Accueil KONIBEM"><img src="images/MT.KONIBEM.PNG" alt="Logo KONIBEM"></a>
       <a class="home-link" href="index.html">← ACCUEIL</a>
     </header>
-
     <main>
-      <section class="game-intro">
-        <h1>AWALÉ</h1>
-        <p>TRADITION • RÉFLEXION • STRATÉGIE</p>
-      </section>
-
+      <section class="game-intro"><h1>AWALÉ</h1><p>TRADITION • RÉFLEXION • STRATÉGIE</p></section>
       <section class="scoreboard" aria-label="Score">
-        <div class="score">
-          <span>TES GRAINES CAPTURÉES</span>
-          <strong id="player-score">0</strong>
-        </div>
-
-        <div class="score">
-          <span>ORDINATEUR</span>
-          <strong id="computer-score">0</strong>
-        </div>
+        <div class="score"><span>TES GRAINES CAPTURÉES</span><strong id="player-score">0</strong></div>
+        <div class="score"><span>ORDINATEUR</span><strong id="computer-score">0</strong></div>
       </section>
-
       <section class="board-wrap" aria-label="Plateau d'Awalé">
-        <div class="row-label">
-          <span>ORDINATEUR</span>
-          <span id="computer-side-total">24 graines</span>
-        </div>
-
+        <div class="row-label"><span>ORDINATEUR</span><span id="computer-side-total">24 graines</span></div>
         <div class="pits" id="computer-pits" aria-label="Cases de l'ordinateur"></div>
-
-        <div class="middle-lane">
-          <span id="turn-label">PARTIE NON COMMENCÉE</span>
-        </div>
-
+        <div class="middle-lane"><span id="turn-label">PARTIE NON COMMENCÉE</span></div>
         <div class="pits" id="player-pits" aria-label="Tes cases"></div>
-
-        <div class="row-label" style="margin-top:8px">
-          <span>TOI</span>
-          <span id="player-side-total">24 graines</span>
-        </div>
+        <div class="row-label" style="margin-top:8px"><span>TOI</span><span id="player-side-total">24 graines</span></div>
       </section>
-
-      <div class="status" id="game-status" role="status" aria-live="polite">
-        Prêt à jouer ? Appuie sur « COMMENCER LA PARTIE ».
-      </div>
-
+      <div class="status" id="game-status" role="status" aria-live="polite">Prêt à jouer ? Appuie sur « COMMENCER LA PARTIE ».</div>
       <div class="controls">
-
-  <label for="difficulty-select" class="difficulty-label">
-    NIVEAU DE DIFFICULTÉ
-  </label>
-
-  <select id="difficulty-select" class="control-btn secondary">
-    <option value="easy">FACILE</option>
-    <option value="medium" selected>MOYEN</option>
-    <option value="hard">DIFFICILE</option>
-  </select>
-
-  <p id="difficulty-description" class="difficulty-description">
-    Un défi équilibré.
-  </p>
-  
-  <button class="control-btn primary" id="start-btn" type="button">
-    COMMENCER LA PARTIE
-  </button>
-
-  <button class="control-btn secondary" id="restart-btn" type="button">
-    RECOMMENCER
-  </button>
-
-</div>
-
+        <label for="difficulty-select" class="difficulty-label">NIVEAU DE DIFFICULTÉ</label>
+        <select id="difficulty-select" class="control-btn secondary">
+          <option value="easy">FACILE</option><option value="medium" selected>MOYEN</option><option value="hard">DIFFICILE</option>
+        </select>
+        <p id="difficulty-description" class="difficulty-description medium">Un défi équilibré.</p>
+        <button class="control-btn primary" id="start-btn" type="button">COMMENCER LA PARTIE</button>
+        <button class="control-btn secondary" id="restart-btn" type="button">RECOMMENCER</button>
+      </div>
       <section class="rules">
         <h2>À propos de l'Awalé</h2>
-
-        <p>
-          L'Awalé est un jeu de stratégie traditionnel africain.
-          Le but est de capturer plus de graines que l'adversaire.
-        </p>
-
+        <p>L'Awalé est un jeu de stratégie traditionnel africain. Le but est de capturer plus de graines que l'adversaire.</p>
         <ul>
           <li>Chaque joueur possède six cases avec quatre graines au départ.</li>
           <li>Choisis une de tes cases contenant des graines : elles sont distribuées une par une dans les cases suivantes.</li>
@@ -658,657 +106,720 @@ button.pit.last-move {
       </section>
     </main>
   </div>
+<script>
+"use strict";
+(() => {
+  const START_SEEDS = 4;
+  const WIN_SCORE = 25;
+  const HUMAN = 0;
+  const AI = 1;
+  const $ = id => document.getElementById(id);
+  const playerPitsEl = $("player-pits");
+  const computerPitsEl = $("computer-pits");
+  const statusEl = $("game-status");
+  const turnLabelEl = $("turn-label");
+  const difficultySelect = $("difficulty-select");
+  const difficultyDescription = $("difficulty-description");
 
-  <script>
-  "use strict";
+  let pits = Array(12).fill(START_SEEDS);
+  let scores = [0, 0];
+  let currentPlayer = HUMAN;
+  let lastMove = null;
+  let started = false;
+  let gameOver = false;
+  let aiTimer = null;
+  let moveInProgress = false;
 
-  (() => {
-    const START_SEEDS = 4;
-    const WIN_SCORE = 25;
-    const HUMAN = 0;
-    const AI = 1;
+  const humanIndexFromVisual = visualIndex => 11 - visualIndex;
+  const aiIndexFromVisual = visualIndex => visualIndex;
+  const sideIndices = player => player === HUMAN ? [6,7,8,9,10,11] : [0,1,2,3,4,5];
+  const opponentIndices = player => sideIndices(1 - player);
+  const sideTotal = (player, board = pits) => sideIndices(player).reduce((sum, index) => sum + board[index], 0);
+  const cloneState = state => ({pits:state.pits.slice(),scores:state.scores.slice(),currentPlayer:state.currentPlayer});
 
-    const $ = (id) => document.getElementById(id);
+  function updateDifficultyDescription() {
+    const descriptions = {
+      easy: "Idéal pour les débutants.",
+      medium: "Un défi équilibré.",
+      hard: "Pour les joueurs expérimentés."
+    };
+    const level = difficultySelect.value;
+    difficultyDescription.textContent = descriptions[level] || descriptions.medium;
+    difficultyDescription.classList.remove("easy","medium","hard");
+    difficultyDescription.classList.add(descriptions[level] ? level : "medium");
+  }
+  difficultySelect.addEventListener("change", updateDifficultyDescription);
+  updateDifficultyDescription();
 
-    const playerPitsEl = $("player-pits");
-    const computerPitsEl = $("computer-pits");
-    const statusEl = $("game-status");
-    const turnLabelEl = $("turn-label");
+  // Distribue les graines dans le sens anti-horaire, sans resemer la case de départ.
+  function sow(board, startIndex) {
+    let seeds = board[startIndex];
+    board[startIndex] = 0;
+    let index = startIndex;
+    while (seeds > 0) {
+      index = (index + 11) % 12;
+      if (index === startIndex) continue;
+      board[index]++;
+      seeds--;
+    }
+    return index;
+  }
 
-    let pits = Array(12).fill(START_SEEDS);
-    let scores = [0, 0];
-    let currentPlayer = HUMAN;
-    let lastMove = null;
-    let started = false;
-    let gameOver = false;
-    let aiTimer = null;
-
-    // Computer pits: indexes 0–5.
-    // Player pits: indexes 6–11.
-    const humanIndexFromVisual = (visualIndex) => 11 - visualIndex;
-    const aiIndexFromVisual = (visualIndex) => visualIndex;
-
-    const sideIndices = (player) =>
-      player === HUMAN
-        ? [6, 7, 8, 9, 10, 11]
-        : [0, 1, 2, 3, 4, 5];
-
-    const opponentIndices = (player) => sideIndices(1 - player);
-
-    const sideTotal = (player, board = pits) =>
-      sideIndices(player).reduce((sum, index) => sum + board[index], 0);
-
-    const cloneState = (state) => ({
-      pits: state.pits.slice(),
-      scores: state.scores.slice(),
-      currentPlayer: state.currentPlayer
+  function legalMoves(state, player) {
+    const own = sideIndices(player);
+    const moves = own.filter(index => state.pits[index] > 0);
+    if (!moves.length) return [];
+    const enemy = opponentIndices(player);
+    const enemyEmpty = enemy.every(index => state.pits[index] === 0);
+    if (!enemyEmpty) return moves;
+    const feedingMoves = moves.filter(index => {
+      const board = state.pits.slice();
+      sow(board, index);
+      return enemy.some(enemyIndex => board[enemyIndex] > 0);
     });
+    return feedingMoves.length ? feedingMoves : moves;
+  }
+    // Exécute un coup et applique les règles de capture.
+  function applyMove(state, startIndex, player) {
+    const next = cloneState(state);
+    const board = next.pits;
+    const enemy = opponentIndices(player);
 
-    // Distribute seeds counter-clockwise, skipping the starting pit.
-    function sow(board, startIndex) {
-      let seeds = board[startIndex];
-      board[startIndex] = 0;
+    const lastIndex = sow(board, startIndex);
+    let captured = 0;
+    let index = lastIndex;
 
-      let index = startIndex;
-
-      while (seeds > 0) {
-        index = (index + 11) % 12;
-
-        if (index === startIndex) {
-          continue;
-        }
-
-        board[index]++;
-        seeds--;
-      }
-
-      return index;
-    }
-
-    function legalMoves(state, player) {
-      const ownPits = sideIndices(player);
-      const moves = ownPits.filter(index => state.pits[index] > 0);
-
-      if (moves.length === 0) {
-        return [];
-      }
-
-      const enemyPits = opponentIndices(player);
-      const opponentIsEmpty = enemyPits.every(index => state.pits[index] === 0);
-
-      if (!opponentIsEmpty) {
-        return moves;
-      }
-
-      // If the opponent has no seeds, prefer moves that feed them.
-      const feedingMoves = moves.filter(index => {
-        const board = state.pits.slice();
-        sow(board, index);
-        return enemyPits.some(enemyIndex => board[enemyIndex] > 0);
-      });
-
-      return feedingMoves.length > 0 ? feedingMoves : moves;
-    }
-
-    function applyMove(state, move, player) {
-      const next = cloneState(state);
-      const lastIndex = sow(next.pits, move);
-      const enemyPits = new Set(opponentIndices(player));
-
-      let captured = 0;
-      let index = lastIndex;
-
-      while (
-        enemyPits.has(index) &&
-        (next.pits[index] === 2 || next.pits[index] === 3)
-      ) {
-        captured += next.pits[index];
-        next.pits[index] = 0;
+    // Capture les cases adverses contenant 2 ou 3 graines.
+    if (enemy.includes(index)) {
+      while (enemy.includes(index) && (board[index] === 2 || board[index] === 3)) {
+        captured += board[index];
+        board[index] = 0;
         index = (index + 1) % 12;
       }
+    }
 
-      // Do not starve the opponent by capturing their final seeds.
-      if (sideTotal(1 - player, next.pits) === 0 && captured > 0) {
-        const boardWithoutCapture = state.pits.slice();
-        sow(boardWithoutCapture, move);
-        next.pits = boardWithoutCapture;
-        captured = 0;
+    // Interdit d'affamer l'adversaire si la capture supprime toutes ses graines.
+    if (captured > 0 && enemy.every(i => board[i] === 0)) {
+      for (let i = 0; i < 12; i++) {
+        if (enemy.includes(i)) {
+          // Les graines capturées seront restaurées dans leur case d'origine.
+          // On reconstruit le coup sans capture.
+        }
       }
+      const uncapturedBoard = state.pits.slice();
+      sow(uncapturedBoard, startIndex);
+      next.pits = uncapturedBoard;
+      captured = 0;
+    }
 
-      next.scores[player] += captured;
-      next.currentPlayer = 1 - player;
+    next.scores[player] += captured;
+    next.currentPlayer = 1 - player;
+
+    return {
+      state: next,
+      lastIndex,
+      startIndex,
+      captured
+    };
+  }
+
+  function stateIsOver(state) {
+    if (state.scores[HUMAN] >= WIN_SCORE ||
+        state.scores[AI] >= WIN_SCORE) {
+      return true;
+    }
+
+    const humanHasSeeds = sideTotal(HUMAN, state.pits) > 0;
+    const aiHasSeeds = sideTotal(AI, state.pits) > 0;
+
+    if (!humanHasSeeds || !aiHasSeeds) {
+      return legalMoves(state, state.currentPlayer).length === 0;
+    }
+
+    return legalMoves(state, state.currentPlayer).length === 0;
+  }
+
+  function finalizeState(state) {
+    const finalState = cloneState(state);
+    finalState.scores[HUMAN] += sideTotal(HUMAN, finalState.pits);
+    finalState.scores[AI] += sideTotal(AI, finalState.pits);
+    finalState.pits = Array(12).fill(0);
+    return finalState;
+  }
+
+  function evaluate(state, player) {
+    const opponent = 1 - player;
+    const scoreDifference = state.scores[player] - state.scores[opponent];
+    const seedDifference = sideTotal(player, state.pits) -
+                           sideTotal(opponent, state.pits);
+
+    const myMoves = legalMoves(state, player).length;
+    const opponentMoves = legalMoves(state, opponent).length;
+
+    let potential = 0;
+
+    for (const index of sideIndices(player)) {
+      if (state.pits[index] === 1 || state.pits[index] === 2) {
+        potential += 0.3;
+      }
+    }
+
+    for (const index of sideIndices(opponent)) {
+      if (state.pits[index] === 1 || state.pits[index] === 2) {
+        potential -= 0.3;
+      }
+    }
+
+    return scoreDifference * 12 +
+           seedDifference * 0.35 +
+           (myMoves - opponentMoves) * 0.8 +
+           potential;
+  }
+
+  function bestImmediateCapture(state, move, player) {
+    const result = applyMove(state, move, player);
+    return result.captured;
+  }
+
+  function orderMoves(state, moves, player) {
+    return moves.slice().sort((a, b) => {
+      const captureA = bestImmediateCapture(state, a, player);
+      const captureB = bestImmediateCapture(state, b, player);
+      return captureB - captureA;
+    });
+  }
+
+  function minimax(state, depth, alpha, beta, maximizingPlayer) {
+    const player = state.currentPlayer;
+
+    if (depth === 0 || stateIsOver(state)) {
+      const finalState = stateIsOver(state) ? finalizeState(state) : state;
 
       return {
-        state: next,
-        captured,
-        last: lastIndex
+        score: evaluate(finalState, maximizingPlayer),
+        move: null
       };
     }
 
-    function stateIsOver(state) {
-      if (state.scores[HUMAN] >= 25 || state.scores[AI] >= 25) {
-        return true;
-      }
+    const moves = orderMoves(
+      state,
+      legalMoves(state, player),
+      player
+    );
 
-      if (legalMoves(state, state.currentPlayer).length === 0) {
-        return true;
-      }
-
-      return state.pits.every(seeds => seeds === 0);
+    if (moves.length === 0) {
+      const finalState = finalizeState(state);
+      return {
+        score: evaluate(finalState, maximizingPlayer),
+        move: null
+      };
     }
 
-    function finalizeState(state) {
-      const finalState = cloneState(state);
-
-      if (stateIsOver(finalState)) {
-        finalState.scores[HUMAN] += sideTotal(HUMAN, finalState.pits);
-        finalState.scores[AI] += sideTotal(AI, finalState.pits);
-        finalState.pits = Array(12).fill(0);
-      }
-
-      return finalState;
-    }
-
-    function evaluate(state, perspective) {
-  const opponent = 1 - perspective;
-
-  // 1. Punktestand bewerten
-  const scoreDifference =
-    state.scores[perspective] - state.scores[opponent];
-
-  // 2. Verbleibende Samen bewerten
-  const remainingSeedsDifference =
-    sideTotal(perspective, state.pits) -
-    sideTotal(opponent, state.pits);
-
-  // 3. Beste unmittelbare Fangchance jeder Seite ermitteln
-  function bestCaptureFor(player) {
-    const playerState = {
-      pits: state.pits.slice(),
-      scores: state.scores.slice(),
-      currentPlayer: player
-    };
-
-    const moves = legalMoves(playerState, player);
-    let bestCapture = 0;
-
-    for (const move of moves) {
-      const result = applyMove(playerState, move, player);
-
-      if (result.captured > bestCapture) {
-        bestCapture = result.captured;
-      }
-    }
-
-    return bestCapture;
-  }
-
-  const myBestCapture = bestCaptureFor(perspective);
-  const opponentBestCapture = bestCaptureFor(opponent);
-
-  // 4. Gesamtbewertung berechnen
-  return (
-    scoreDifference * 12 +
-    remainingSeedsDifference * 0.35 +
-    myBestCapture * 2 -
-    opponentBestCapture * 2
-  );
-}
-
-    // Minimax with alpha-beta pruning.
-    function minimax(state, depth, alpha, beta, perspective) {
-      if (depth === 0 || stateIsOver(state)) {
-        const evaluatedState = stateIsOver(state)
-          ? finalizeState(state)
-          : state;
-
-        return {
-          value: evaluate(evaluatedState, perspective)
-        };
-      }
-
-      const moves = legalMoves(state, state.currentPlayer);
-
-      if (moves.length === 0) {
-        return {
-          value: evaluate(finalizeState(state), perspective)
-        };
-      }
-
-// Prioritize moves that capture the most seeds.
-moves.sort((a, b) => {
-  const captureA = applyMove(state, a, state.currentPlayer).captured;
-  const captureB = applyMove(state, b, state.currentPlayer).captured;
-
-  return captureB - captureA;
-});
-
-      const maximizing = state.currentPlayer === perspective;
-
+    if (player === maximizingPlayer) {
+      let bestScore = -Infinity;
       let bestMove = moves[0];
-      let bestValue = maximizing ? -Infinity : Infinity;
 
       for (const move of moves) {
-        const result = applyMove(state, move, state.currentPlayer);
-        const value = minimax(
+        const result = applyMove(state, move, player);
+        const child = minimax(
           result.state,
           depth - 1,
           alpha,
           beta,
-          perspective
-        ).value;
+          maximizingPlayer
+        );
 
-        if (
-          (maximizing && value > bestValue) ||
-          (!maximizing && value < bestValue)
-        ) {
-          bestValue = value;
+        if (child.score > bestScore) {
+          bestScore = child.score;
           bestMove = move;
         }
 
-        if (maximizing) {
-          alpha = Math.max(alpha, bestValue);
-        } else {
-          beta = Math.min(beta, bestValue);
-        }
-
-        if (beta <= alpha) {
-          break;
-        }
+        alpha = Math.max(alpha, bestScore);
+        if (beta <= alpha) break;
       }
 
-      return {
-        value: bestValue,
-        move: bestMove
-      };
+      return {score: bestScore, move: bestMove};
+    } else {
+      let bestScore = Infinity;
+      let bestMove = moves[0];
+
+      for (const move of moves) {
+        const result = applyMove(state, move, player);
+        const child = minimax(
+          result.state,
+          depth - 1,
+          alpha,
+          beta,
+          maximizingPlayer
+        );
+
+        if (child.score < bestScore) {
+          bestScore = child.score;
+          bestMove = move;
+        }
+
+        beta = Math.min(beta, bestScore);
+        if (beta <= alpha) break;
+      }
+
+      return {score: bestScore, move: bestMove};
+    }
+  }
+    function render() {
+    playerPitsEl.innerHTML = "";
+    computerPitsEl.innerHTML = "";
+
+    // Cases de l'ordinateur, de gauche à droite.
+    for (let visualIndex = 0; visualIndex < 6; visualIndex++) {
+      const index = aiIndexFromVisual(visualIndex);
+      computerPitsEl.appendChild(createPit(index, AI));
     }
 
-    function createPitButton(player, visualIndex) {
-      const button = document.createElement("button");
+    // Cases du joueur, dans l'ordre visuel inverse.
+    for (let visualIndex = 0; visualIndex < 6; visualIndex++) {
+      const index = humanIndexFromVisual(visualIndex);
+      playerPitsEl.appendChild(createPit(index, HUMAN));
+    }
 
-      button.className = "pit";
-      button.type = "button";
+    $("player-score").textContent = scores[HUMAN];
+    $("computer-score").textContent = scores[AI];
 
-      button.setAttribute(
-        "aria-label",
-        player === HUMAN
-          ? `Ta case ${visualIndex + 1}`
-          : `Case ordinateur ${visualIndex + 1}`
+    $("player-side-total").textContent =
+      sideTotal(HUMAN) + " graines";
+
+    $("computer-side-total").textContent =
+      sideTotal(AI) + " graines";
+
+    playerPitsEl.classList.toggle(
+      "active-turn",
+      started && !gameOver && currentPlayer === HUMAN
+    );
+
+    computerPitsEl.classList.toggle(
+      "active-turn",
+      started && !gameOver && currentPlayer === AI
+    );
+
+    if (!started) {
+      turnLabelEl.textContent = "PARTIE NON COMMENCÉE";
+    } else if (gameOver) {
+      turnLabelEl.textContent = "PARTIE TERMINÉE";
+    } else if (currentPlayer === HUMAN) {
+      turnLabelEl.textContent = "À TON TOUR";
+    } else {
+      turnLabelEl.textContent = "TOUR DE L'ORDINATEUR";
+    }
+  }
+
+  function createPit(index, player) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "pit";
+    button.dataset.index = index;
+
+    const count = document.createElement("span");
+    count.className = "pit-count";
+    count.setAttribute("aria-hidden", "true");
+
+    const seedCount = pits[index];
+
+    // Dessine chaque graine lorsque la quantité reste raisonnable.
+    // Pour les grandes quantités, le nombre reste toujours visible.
+    const visibleSeeds = Math.min(seedCount, 36);
+
+    for (let i = 0; i < visibleSeeds; i++) {
+      const seed = document.createElement("span");
+      seed.className = "seed";
+      seed.style.setProperty(
+        "--seed-rotation",
+        ((i * 37 + index * 19) % 31 - 15) + "deg"
+      );
+      count.appendChild(seed);
+    }
+
+    const number = document.createElement("span");
+    number.className = "pit-index";
+    number.textContent = index + 1;
+
+    button.appendChild(count);
+
+    const countLabel = document.createElement("span");
+    countLabel.style.cssText =
+      "font-size:clamp(11px,3vw,15px);font-weight:700;color:#f5d58a;line-height:1";
+    countLabel.textContent = seedCount;
+    button.appendChild(countLabel);
+    button.appendChild(number);
+
+    const playerName = player === HUMAN ? "Ta case" : "Case de l'ordinateur";
+    button.setAttribute(
+      "aria-label",
+      playerName + " " + (index + 1) + ", " +
+      seedCount + " graines"
+    );
+
+    const isHumanTurn =
+      started && !gameOver && !moveInProgress &&
+      currentPlayer === HUMAN;
+
+    const legal = isHumanTurn &&
+      legalMoves(
+        {pits: pits.slice(), scores: scores.slice(), currentPlayer},
+        HUMAN
+      ).includes(index);
+
+    button.disabled = !legal;
+
+    if (legal) button.classList.add("legal");
+    if (lastMove && lastMove.lastIndex === index) {
+      button.classList.add("last-move");
+    }
+
+    button.addEventListener("click", () => humanMove(index));
+
+    return button;
+  }
+
+  function setStatus(message, type = "") {
+    statusEl.textContent = message;
+    statusEl.classList.remove("status-win", "status-loss", "status-draw");
+
+    if (type) {
+      statusEl.classList.add("status-" + type);
+    }
+  }
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function getPitCenter(index) {
+    const element = document.querySelector(
+      '.pit[data-index="' + index + '"]'
+    );
+
+    if (!element) return null;
+
+    const rect = element.getBoundingClientRect();
+
+    return {
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2
+    };
+  }
+
+  function moveSeedVisually(fromIndex, toIndex) {
+    return new Promise(resolve => {
+      const from = getPitCenter(fromIndex);
+      const to = getPitCenter(toIndex);
+
+      if (!from || !to) {
+        resolve();
+        return;
+      }
+
+      const seed = document.createElement("span");
+      seed.className = "moving-seed";
+
+      seed.style.left = from.x + "px";
+      seed.style.top = from.y + "px";
+      document.body.appendChild(seed);
+
+      // Force le navigateur à appliquer la position initiale.
+      seed.getBoundingClientRect();
+
+      requestAnimationFrame(() => {
+        seed.style.left = to.x + "px";
+        seed.style.top = to.y + "px";
+      });
+
+      const finish = () => {
+        seed.remove();
+        resolve();
+      };
+
+      seed.addEventListener("transitionend", finish, {once: true});
+
+      // Sécurité si l'animation est interrompue ou désactivée.
+      setTimeout(finish, 400);
+    });
+  }
+
+  async function animateMove(startIndex, player) {
+    const boardBefore = pits.slice();
+    const seedsToMove = boardBefore[startIndex];
+
+    if (seedsToMove <= 0) return null;
+
+    // Calcule les cases traversées avant de mettre à jour le plateau.
+    let index = startIndex;
+    let remaining = seedsToMove;
+    const path = [];
+
+    while (remaining > 0) {
+      index = (index + 11) % 12;
+
+      // On ne redépose pas de graine dans la case de départ.
+      if (index === startIndex) continue;
+
+      path.push(index);
+      remaining--;
+    }
+
+    // Animation visuelle du semis.
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (!reducedMotion) {
+      let previousIndex = startIndex;
+
+      for (const destination of path) {
+        await moveSeedVisually(previousIndex, destination);
+        previousIndex = destination;
+      }
+    }
+
+    // Applique le coup à l'état réel.
+    const state = {
+      pits: boardBefore,
+      scores: scores.slice(),
+      currentPlayer: player
+    };
+
+    const result = applyMove(state, startIndex, player);
+
+    pits = result.state.pits;
+    scores = result.state.scores;
+    currentPlayer = result.state.currentPlayer;
+
+    lastMove = {
+      startIndex,
+      lastIndex: result.lastIndex,
+      captured: result.captured
+    };
+
+    render();
+
+    return result;
+  }
+    async function humanMove(index) {
+    if (!started || gameOver || moveInProgress || currentPlayer !== HUMAN) {
+      return;
+    }
+
+    const state = {
+      pits: pits.slice(),
+      scores: scores.slice(),
+      currentPlayer
+    };
+
+    if (!legalMoves(state, HUMAN).includes(index)) {
+      setStatus("Choisis une case contenant des graines.");
+      return;
+    }
+
+    moveInProgress = true;
+    render();
+    setStatus("Tu joues...");
+
+    try {
+      const result = await animateMove(index, HUMAN);
+
+      if (!result) return;
+
+      if (checkGameEnd()) return;
+
+      setStatus(
+        result.captured > 0
+          ? "Tu as capturé " + result.captured + " graine(s) ! L'ordinateur réfléchit..."
+          : "Coup joué. L'ordinateur réfléchit..."
       );
 
-      if (player === HUMAN) {
-        button.addEventListener("click", () => {
-          humanMove(humanIndexFromVisual(visualIndex));
-        });
-      }
-
-      const count = document.createElement("span");
-      count.className = "pit-count";
-
-      const label = document.createElement("span");
-      label.className = "pit-index";
-      label.textContent = String(visualIndex + 1);
-
-      button.append(count, label);
-
-      return button;
-    }
-
-async function moveSeedVisually(fromIndex, toIndex) {
-  const getPitButton = (index) => {
-    if (index >= 6) {
-      const visualIndex = 11 - index;
-      return playerPitsEl.children[visualIndex];
-    }
-    return computerPitsEl.children[index];
-  };
-  const fromPit = getPitButton(fromIndex);
-  const toPit = getPitButton(toIndex);
-  if (!fromPit || !toPit) {
-    return;
-  }
-  const fromRect = fromPit.getBoundingClientRect();
-  const toRect = toPit.getBoundingClientRect();
-  const seed = document.createElement("span");
-  seed.className = "moving-seed";
-  seed.style.left = `${fromRect.left + fromRect.width / 2}px`;
-  seed.style.top = `${fromRect.top + fromRect.height / 2}px`;
-  document.body.appendChild(seed);
-  // Startposition registrieren.
-  seed.getBoundingClientRect();
-  await new Promise(resolve => requestAnimationFrame(resolve));
-  // Samen zur nächsten Mulde bewegen.
-  seed.style.left = `${toRect.left + toRect.width / 2}px`;
-  seed.style.top = `${toRect.top + toRect.height / 2}px`;
-  // Flugbewegung abwarten.
-  await new Promise(resolve => setTimeout(resolve, 280));
-  // Sanfte Landungsanimation starten.
-  seed.classList.add("landing");
-  await new Promise(resolve => setTimeout(resolve, 180));
-  seed.remove();
-}
-
-    function render() {
-      playerPitsEl.replaceChildren();
-      computerPitsEl.replaceChildren();
-
-      for (let visualIndex = 0; visualIndex < 6; visualIndex++) {
-        const computerButton = createPitButton(AI, visualIndex);
-
-        computerButton.disabled = true;
-
-        const computerCount = computerButton.querySelector(".pit-count");
-computerCount.replaceChildren();
-for (let seedIndex = 0; seedIndex < pits[aiIndexFromVisual(visualIndex)]; seedIndex++) {
-  const seed = document.createElement("span");
-  seed.className = "seed";
-  seed.style.setProperty("--seed-rotation", `${(seedIndex * 47) % 70 - 35}deg`);
-  seed.setAttribute("aria-hidden", "true");
-  computerCount.appendChild(seed);
-}
-computerCount.setAttribute(
-  "aria-label",
-  `${pits[aiIndexFromVisual(visualIndex)]} graines`
-);
-
-if (
-  lastMove &&
-  lastMove.player === AI &&
-  lastMove.index === aiIndexFromVisual(visualIndex)
-) {
-  computerButton.classList.add("last-move");
-}
-
-        computerPitsEl.appendChild(computerButton);
-
-        const playerButton = createPitButton(HUMAN, visualIndex);
-
-        const playerCount = playerButton.querySelector(".pit-count");
-playerCount.replaceChildren();
-for (let seedIndex = 0; seedIndex < pits[humanIndexFromVisual(visualIndex)]; seedIndex++) {
-  const seed = document.createElement("span");
-  seed.className = "seed";
-  seed.style.setProperty("--seed-rotation", `${(seedIndex * 47) % 70 - 35}deg`);
-  seed.setAttribute("aria-hidden", "true");
-  playerCount.appendChild(seed);
-}
-playerCount.setAttribute(
-  "aria-label",
-  `${pits[humanIndexFromVisual(visualIndex)]} graines`
-);
-
-        const currentState = {
-          pits,
-          scores,
-          currentPlayer
-        };
-
-        const canMove =
-          started &&
-          !gameOver &&
-          currentPlayer === HUMAN &&
-          legalMoves(currentState, HUMAN).includes(
-            humanIndexFromVisual(visualIndex)
-          );
-
-if (
-  lastMove &&
-  lastMove.player === HUMAN &&
-  lastMove.index === humanIndexFromVisual(visualIndex)
-) {
-  playerButton.classList.add("last-move");
-}
-
-        playerButton.disabled = !canMove;
-
-        if (canMove) {
-          playerButton.classList.add("legal");
-        }
-
-        playerPitsEl.appendChild(playerButton);
-      }
-
-      $("player-score").textContent = scores[HUMAN];
-      $("computer-score").textContent = scores[AI];
-
-      $("computer-side-total").textContent =
-        `${sideTotal(AI)} graines`;
-
-      $("player-side-total").textContent =
-        `${sideTotal(HUMAN)} graines`;
-
-      turnLabelEl.textContent = gameOver
-        ? "PARTIE TERMINÉE"
-        : !started
-          ? "PARTIE NON COMMENCÉE"
-          : currentPlayer === HUMAN
-            ? "À TOI DE JOUER"
-            : "TOUR DE L'ORDINATEUR";
-            
-            computerPitsEl.classList.toggle(
-  "active-turn",
-  started && !gameOver && currentPlayer === AI
-);
-
-playerPitsEl.classList.toggle(
-  "active-turn",
-  started && !gameOver && currentPlayer === HUMAN
-);
-    }
-
-    function setStatus(message, type = "") {
-  statusEl.textContent = message;
-
-  statusEl.classList.remove("status-win", "status-loss", "status-draw");
-
-  if (type) {
-    statusEl.classList.add(`status-${type}`);
-  }
-}
-
-    function checkGameEnd() {
-      const state = {
-        pits,
-        scores,
-        currentPlayer
-      };
-
-      if (!stateIsOver(state)) {
-        return false;
-      }
-
-      const finalState = finalizeState(state);
-
-      pits = finalState.pits;
-      scores = finalState.scores;
-      gameOver = true;
-      currentPlayer = HUMAN;
-
+      moveInProgress = false;
       render();
 
-      if (scores[HUMAN] > scores[AI]) {
-  setStatus(
-    `🏆 VICTOIRE ! Tu remportes la partie ${scores[HUMAN]} à ${scores[AI]}. Félicitations !`,
-    "win"
-  );
-} else if (scores[AI] > scores[HUMAN]) {
-  setStatus(
-    `🤖 FIN DE PARTIE ! L'ordinateur gagne ${scores[AI]} à ${scores[HUMAN]}. Prends ta revanche !`,
-    "loss"
-  );
-} else {
-  setStatus(
-    `🤝 MATCH NUL ! Vous terminez à égalité : ${scores[HUMAN]} à ${scores[AI]}.`,
-    "draw"
-  );
-}
+      aiTimer = setTimeout(computerMove, 500);
+    } catch (error) {
+      console.error("Erreur pendant le coup du joueur :", error);
+      moveInProgress = false;
+      render();
+      setStatus("Une erreur est survenue. Essaie de recommencer la partie.");
+    }
+  }
 
+  function getSearchDepth() {
+    const level = difficultySelect.value;
+
+    if (level === "easy") return 2;
+    if (level === "medium") {
+      return sideTotal(HUMAN) + sideTotal(AI) > 30 ? 3 : 4;
+    }
+
+    return sideTotal(HUMAN) + sideTotal(AI) > 30 ? 4 : 5;
+  }
+
+  function chooseComputerMove() {
+    const state = {
+      pits: pits.slice(),
+      scores: scores.slice(),
+      currentPlayer: AI
+    };
+
+    const moves = legalMoves(state, AI);
+
+    if (moves.length === 0) return null;
+
+    const level = difficultySelect.value;
+
+    // Niveau facile : l'ordinateur choisit parfois un coup alternatif.
+    if (level === "easy" && Math.random() < 0.35) {
+      return moves[Math.floor(Math.random() * moves.length)];
+    }
+
+    const result = minimax(
+      state,
+      getSearchDepth(),
+      -Infinity,
+      Infinity,
+      AI
+    );
+
+    return result.move !== null && moves.includes(result.move)
+      ? result.move
+      : moves[0];
+  }
+
+  async function computerMove() {
+    if (!started || gameOver || moveInProgress || currentPlayer !== AI) {
+      return;
+    }
+
+    const move = chooseComputerMove();
+
+    if (move === null) {
+      finishGame();
+      return;
+    }
+
+    moveInProgress = true;
+    render();
+    setStatus("L'ordinateur joue...");
+
+    try {
+      await sleep(250);
+
+      const result = await animateMove(move, AI);
+
+      if (!result) return;
+
+      if (checkGameEnd()) return;
+
+      moveInProgress = false;
+      render();
+
+      setStatus(
+        result.captured > 0
+          ? "L'ordinateur a capturé " + result.captured + " graine(s). À toi de jouer !"
+          : "À toi de jouer ! Choisis une de tes cases."
+      );
+    } catch (error) {
+      console.error("Erreur pendant le coup de l'ordinateur :", error);
+      moveInProgress = false;
+      render();
+      setStatus("Une erreur est survenue. Essaie de recommencer la partie.");
+    }
+  }
+
+  function checkGameEnd() {
+    const state = {
+      pits: pits.slice(),
+      scores: scores.slice(),
+      currentPlayer
+    };
+
+    if (scores[HUMAN] >= WIN_SCORE ||
+        scores[AI] >= WIN_SCORE ||
+        stateIsOver(state)) {
+      finishGame();
       return true;
     }
 
-    async function animateMove(index, player) {
-  const before = {
-    pits: pits.slice(),
-    scores: scores.slice(),
-    currentPlayer: player
-  };
-  const seedsToMove = before.pits[index];
-  if (seedsToMove <= 0) {
-    return {
-      state: before,
-      captured: 0,
-      last: index
-    };
-  }
-  // Calculer le résultat réel sans modifier la logique du jeu.
-  const result = applyMove(before, index, player);
-  lastMove = { index, player };
-  // Préparer l'affichage animé.
-  const visualPits = before.pits.slice();
-  visualPits[index] = 0;
-  pits = visualPits.slice();
-  render();
-  await new Promise(resolve => setTimeout(resolve, 250));
-  let cursor = index;
-  for (let seed = 0; seed < seedsToMove; seed++) {
-    const previousIndex = cursor;
-    cursor = (cursor + 11) % 12;
-    // Ignorer la case de départ pendant la distribution.
-    if (cursor === index) {
-      cursor = (cursor + 11) % 12;
-    }
-    // Animer le déplacement de la graine entre les deux cases.
-    await moveSeedVisually(previousIndex, cursor);
-    visualPits[cursor]++;
-    pits = visualPits.slice();
-    render();
-    await new Promise(resolve => setTimeout(resolve, 80));
-  }
-  // Appliquer l'état définitif calculé par les règles.
-  pits = result.state.pits.slice();
-  scores = result.state.scores.slice();
-  currentPlayer = result.state.currentPlayer;
-  render();
-  await new Promise(resolve => setTimeout(resolve, 300));
-  return result;
-}
-async function humanMove(index) {
-  if (!started || gameOver || currentPlayer !== HUMAN) return;
-  const moves = legalMoves(
-    { pits, scores, currentPlayer },
-    HUMAN
-  );
-  if (!moves.includes(index)) {
-    setStatus("Choisis une case autorisée contenant des graines.");
-    return;
-  }
-  currentPlayer = AI;
-  setStatus("Tu distribues les graines…");
-  render();
-  const result = await animateMove(index, HUMAN);
-  if (checkGameEnd()) return;
-  setStatus(
-  result.captured > 0
-    ? `L'ordinateur capture ${result.captured} graine${result.captured > 1 ? "s" : ""}. À toi de jouer !`
-    : "À toi de jouer ! Choisis une de tes cases."
-);
-  aiTimer = setTimeout(computerMove, 600);
-}
-async function computerMove() {
-  if (!started || gameOver || currentPlayer !== AI) return;
-
-  const state = {
-    pits: pits.slice(),
-    scores: scores.slice(),
-    currentPlayer
-  };
-
-  const moves = legalMoves(state, AI);
-
-  if (!moves.length) {
-    checkGameEnd();
-    return;
+    return false;
   }
 
-  setStatus("L'ordinateur choisit sa case…");
+  function finishGame() {
+    if (gameOver) return;
 
-  await new Promise(resolve => setTimeout(resolve, 500));
-
-  if (!started || gameOver || currentPlayer !== AI) return;
-
-  const difficulty = document.getElementById("difficulty-select").value;
-
-  let depth;
-
-  if (difficulty === "easy") {
-    depth = 2;
-  } else if (difficulty === "medium") {
-    depth = moves.length > 8 ? 4 : 5;
-  } else {
-    depth = moves.length > 8 ? 5 : 6;
-  }
-
-  const decision = minimax(
-    state,
-    depth,
-    -Infinity,
-    Infinity,
-    AI
-  );
-
-  let move = decision.move ?? moves[0];
-
-  if (
-    difficulty === "easy" &&
-    moves.length > 1 &&
-    Math.random() < 0.35
-  ) {
-    const alternativeMoves = moves.filter(
-      candidate => candidate !== move
-    );
-
-    if (alternativeMoves.length > 0) {
-      move = alternativeMoves[
-        Math.floor(Math.random() * alternativeMoves.length)
-      ];
-    }
-  }
-
-  setStatus("L'ordinateur distribue les graines…");
-
-  const result = await animateMove(move, AI);
-
-  if (checkGameEnd()) return;
-
-  setStatus(
-    result.captured > 0
-      ? `L'ordinateur capture ${result.captured} graine${result.captured > 1 ? "s" : ""}. À toi de jouer !`
-      : "À toi de jouer ! Choisis une de tes cases."
-  );
-}
-
-    function startGame() {
-      if (aiTimer) {
-        clearTimeout(aiTimer);
-        aiTimer = null;
-      }
-
-      pits = Array(12).fill(START_SEEDS);
-      scores = [0, 0];
-      currentPlayer = HUMAN;
-      started = true;
-      gameOver = false;
-
-      render();
-
-      setStatus("La partie commence ! Choisis une de tes six cases.");
+    if (aiTimer !== null) {
+      clearTimeout(aiTimer);
+      aiTimer = null;
     }
 
-    $("start-btn").addEventListener("click", startGame);
-    $("restart-btn").addEventListener("click", startGame);
+    const finalState = finalizeState({
+      pits: pits.slice(),
+      scores: scores.slice(),
+      currentPlayer
+    });
+
+    pits = finalState.pits;
+    scores = finalState.scores;
+    gameOver = true;
+    moveInProgress = false;
 
     render();
-  })();
-  </script>
+
+    if (scores[HUMAN] > scores[AI]) {
+      setStatus(
+        "🏆 Félicitations ! Tu as gagné avec " +
+        scores[HUMAN] + " graines contre " + scores[AI] + " !",
+        "win"
+      );
+    } else if (scores[AI] > scores[HUMAN]) {
+      setStatus(
+        "L'ordinateur a gagné avec " +
+        scores[AI] + " graines contre " + scores[HUMAN] + ". Réessaie !",
+        "loss"
+      );
+    } else {
+      setStatus(
+        "Match nul ! Chaque joueur a capturé " +
+        scores[HUMAN] + " graines.",
+        "draw"
+      );
+    }
+
+    turnLabelEl.textContent = "PARTIE TERMINÉE";
+  }
+
+  function startGame() {
+    if (aiTimer !== null) {
+      clearTimeout(aiTimer);
+      aiTimer = null;
+    }
+
+    pits = Array(12).fill(START_SEEDS);
+    scores = [0, 0];
+    currentPlayer = HUMAN;
+    lastMove = null;
+    started = true;
+    gameOver = false;
+    moveInProgress = false;
+
+    render();
+
+    setStatus("La partie commence ! À toi de jouer.");
+  }
+
+  function restartGame() {
+    startGame();
+  }
+
+  $("start-btn").addEventListener("click", startGame);
+  $("restart-btn").addEventListener("click", restartGame);
+
+  // Affiche le plateau initial avant le démarrage.
+  render();
+})();
+</script>
 </body>
 </html>
