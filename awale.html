@@ -1062,9 +1062,9 @@ async function humanMove(index) {
   const result = await animateMove(index, HUMAN);
   if (checkGameEnd()) return;
   setStatus(
-result.captured > 0
-? Bravo ! Tu captures ${result.captured} graine${result.captured > 1 ? "s" : ""} ! L'ordinateur réfléchit…
-: “Bien joué ! L’ordinateur réfléchit…”
+  result.captured > 0
+    ? `Bravo ! Tu captures ${result.captured} graine${result.captured > 1 ? "s" : ""} ! L'ordinateur réfléchit…`
+    : "Bien joué ! L'ordinateur réfléchit…"
 );
   aiTimer = setTimeout(computerMove, 600);
 }
