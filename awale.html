@@ -343,6 +343,27 @@ button.pit.last-move {
     inset 0 0 10px rgba(255, 215, 130, 0.08);
 }
 
+/* KONIBEM – Animation de victoire */
+@keyframes konibem-victory {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.98);
+    box-shadow: 0 0 0 rgba(255, 215, 130, 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow:
+      0 0 12px rgba(255, 215, 130, 0.22),
+      inset 0 0 10px rgba(255, 215, 130, 0.08);
+  }
+}
+
+.status.status-win {
+  animation: konibem-victory 0.6s ease-out;
+}
+
 .status.status-loss {
   color: #e9b7a8;
   font-weight: 600;
