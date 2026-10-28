@@ -330,6 +330,35 @@ button.pit.last-move {
       line-height: 1.45;
     }
 
+/* KONIBEM – Résultats de fin de partie */
+
+.status.status-win {
+  color: #ffe0a0;
+  font-weight: 700;
+  border: 1px solid rgba(255, 215, 130, 0.65);
+  border-radius: 10px;
+  background: rgba(201, 169, 110, 0.12);
+  box-shadow:
+    0 0 12px rgba(255, 215, 130, 0.22),
+    inset 0 0 10px rgba(255, 215, 130, 0.08);
+}
+
+.status.status-loss {
+  color: #e9b7a8;
+  font-weight: 600;
+  border: 1px solid rgba(180, 100, 80, 0.45);
+  border-radius: 10px;
+  background: rgba(120, 45, 35, 0.12);
+}
+
+.status.status-draw {
+  color: #e9d7b3;
+  font-weight: 600;
+  border: 1px solid rgba(201, 169, 110, 0.4);
+  border-radius: 10px;
+  background: rgba(201, 169, 110, 0.07);
+}
+
     .controls {
       display: grid;
       grid-template-columns: 1fr 1fr;
